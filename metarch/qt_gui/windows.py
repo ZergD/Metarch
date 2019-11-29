@@ -1,4 +1,5 @@
 from PySide2.QtWidgets import QMainWindow, QGraphicsView, QVBoxLayout, QWidget
+from PySide2.QtCore import Qt
 
 from metarch.qt_gui.antares_launcher_scene import AntaresLauncherScene
 from metarch.qt_gui.antares_launcher_view import AntaresLauncherView
@@ -15,7 +16,8 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.view)
 
-
+        # self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setWindowFlag(Qt.MSWindowsFixedSizeDialogHint)
 
 
 
