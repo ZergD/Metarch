@@ -1,19 +1,12 @@
-import os
 import sys
 import pkgutil
-from pathlib import Path
-
-import urllib
-import json
-
+import pprint
+import sys
 
 from metarch.core import qt_app
 from metarch.core.alphadeesp import AlphaDeesp
 from metarch.katas import kata1
 
-from __init__ import run_exercice
-
-import pprint
 
 # def test(txt):
 #     prev2 = None
@@ -91,7 +84,3 @@ if __name__ == "__main__":
 
         app = qt_app.run(sys)
         sys.exit(app)
-
-
-
-
