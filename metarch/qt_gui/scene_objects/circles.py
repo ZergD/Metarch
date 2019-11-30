@@ -3,7 +3,7 @@ from PySide2.QtWidgets import QGraphicsItem
 
 from metarch.qt_gui import scene_objects
 
-GLOBAL_BLOCK_HEIGHT = 10
+GLOBAL_BLOCK_HEIGHT = 100
 
 
 class Circle(QGraphicsItem):
@@ -28,3 +28,6 @@ class Circle(QGraphicsItem):
         # qpainter.drawLine(self.pos, QPoint(self.pos.x() + self.length, self.pos.y() + self.length))
         qpainter.setBrush(self.mpen.color())
         qpainter.drawEllipse(self.pos, self.length, self.length)
+        qpainter.setPen(Qt.cyan)
+        qpainter.setBrush(Qt.NoBrush)
+        qpainter.drawRect(self.boundingRect())
