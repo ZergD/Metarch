@@ -3,6 +3,7 @@ from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
 from metarch.qt_gui.scene_objects.circles import Circle
+from metarch.qt_gui.scene_objects.rect_buttons import RectButton
 
 
 class AntaresLauncherScene(QGraphicsScene):
@@ -24,13 +25,23 @@ class AntaresLauncherScene(QGraphicsScene):
 
         # ####################################################
         simulations = ["BP_2019", "BP_2020", "BP_2021"]
-        positions = []
+        positions = [(-400, 100), (-400, 300), (-400, -100)]
 
         # for simulation in simulations:
         #     self.addItem()
 
-        for simulation in simulations:
-            print(f"added simulation: {simulation}")
+        # for simulation, position in zip(simulations, positions):
+        #     print(f"added simulation: {simulation} at position: {position}")
+        #     sim = RectButton(position[0], position[1] - 400, 50, 200, "Hello")
+        #     self.addItem(sim)
+
+        for i in range(1, 2):
+            x = -400
+            y = i * 100 - 500
+            width = 200
+            height = 50
+            sim = RectButton(x, y, height, width, "test")
+            self.addItem(sim)
 
 
 

@@ -11,7 +11,7 @@ def run():
     app = QApplication()
 
     main_window = MainWindow()
-    main_window.setGeometry(1000, 100, 1200, 800)
+    main_window.setGeometry(1000, 100, 1200, 1200)
     main_window.show()
 
     sys.exit(app.exec_())
