@@ -19,9 +19,9 @@ class AntaresLauncherScene(QGraphicsScene):
         # self.addItem(Circle(QPoint(10, 10)))
 
         axis = scene_objects.init_visual_scene_axis()
-        for ax in axis:
-            self.addItem(ax)
-            print(f"object {ax} has been added to the scene")
+        # for ax in axis:
+        #     self.addItem(ax)
+        #     print(f"object {ax} has been added to the scene")
 
         # ####################################################
         simulations = ["BP_2019", "BP_2020", "BP_2021"]
@@ -35,7 +35,7 @@ class AntaresLauncherScene(QGraphicsScene):
         #     sim = RectButton(position[0], position[1] - 400, 50, 200, "Hello")
         #     self.addItem(sim)
 
-        for i in range(1, 2):
+        for i in range(1, 10):
             x = -400
             y = i * 100 - 500
             width = 200

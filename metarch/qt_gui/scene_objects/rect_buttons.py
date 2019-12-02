@@ -1,8 +1,8 @@
-from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsItem
-from metarch.qt_gui import scene_objects
-from PySide2.QtCore import Qt, QRectF
-
 import numpy as np
+from PySide2.QtCore import Qt, QRectF
+from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsItem
+
+from metarch.qt_gui import scene_objects
 
 
 class RectButton(QGraphicsRectItem):
@@ -71,7 +71,7 @@ class RectButton(QGraphicsRectItem):
         return QRectF(self.x - offset, self.y - offset, self.width * 3.25, self.height + 10)
 
     def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
-        qpainter.setPen(self.mpen)
+        qpainter.setPen(Qt.NoPen)
         qpainter.drawRect(self.x, self.y, self.width, self.height)
 
         current_index_state = np.where(self.state == 1)[0][0]
@@ -80,6 +80,7 @@ class RectButton(QGraphicsRectItem):
 
         if current_index_state == 0:
             self.current_color_1 = Qt.red
+            # self.current_color_1 = Qt.gray
         else:
             self.current_color_1 = Qt.gray
         if current_index_state == 1:
@@ -87,19 +88,18 @@ class RectButton(QGraphicsRectItem):
         else:
             self.current_color_2 = Qt.gray
 
-        qpainter.setPen(self.current_color)
+        # first rectangle, name of simulation
         qpainter.setBrush(self.current_color)
         qpainter.drawRect(self.x, self.y, self.width, self.height)
 
+        # 2nd rectangle, type of simulation
         new_pos = self.x + self.width + 1
         # second rectangle
-        qpainter.setPen(self.current_color_1)
         qpainter.setBrush(self.current_color_1)
         qpainter.drawRect(new_pos, self.y, self.width, self.height)
 
-        new_pos_2 = self.x + 2 * self.width
+        new_pos_2 = self.x + 2 * self.width + 2
         # third rectangle
-        qpainter.setPen(self.current_color_2)
         qpainter.setBrush(self.current_color_2)
         qpainter.drawRect(new_pos_2, self.y, self.width, self.height)
 
