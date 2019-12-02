@@ -5,6 +5,7 @@ from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsItem, QFileDialog
 
 from metarch.qt_gui import scene_objects
 from pathlib import Path
+import os
 
 from metarch.qt_gui.scene_objects.texts import HText
 
@@ -220,12 +221,19 @@ class SelectFolderButton(QGraphicsRectItem):
         # parent.mousePressEvent(q_mouse_event)
 
         if self.id == 0:
-            # print("we create a QFileDialog")
-            # qfile_name = QFileDialog().getOpenFileName("Choose a Simulation Folder", str(Path.cwd()))
-            qfile_name = self.qfile_name.getExistingDirectory()
+            dir_path_name = self.qfile_name.getExistingDirectory()
             # print("get existing directory : ", QFileDialog().getExistingDirectory())
             # qfile_name = QFileDialog().getOpenFileName()
-            print("You choose the file directory: ", qfile_name)
+            print("You choose the file directory: ", dir_path_name)
+
+            simus = []
+            # save all directories, ie, Antares simulation
+            for elem in os.listdir(dir_path_name):
+                if os.path.isdir(elem):
+                    simus.append(elem)
+
+            print("List of all Simulations: ", simus)
+
             self.id += 1
 
         self.i = (self.i + 1) % 2
