@@ -30,6 +30,7 @@ class RectButton(QGraphicsRectItem):
         self.width = width
         self.height = height
         self.text = text
+        self.font_size = 10
         super(RectButton, self).__init__(self.x, self.y, self.width, self.height)
 
         # simple state array, represented as a numpy array, 0 = False, 1 = True
@@ -45,8 +46,13 @@ class RectButton(QGraphicsRectItem):
 
         self.mpen = scene_objects.initialize_qpen(Qt.gray)
         self.current_color = Qt.gray
-        self.current_color_1 = Qt.gray
-        self.current_color_2 = Qt.gray
+        # type simu
+        self.current_color_type = Qt.gray
+        # state zipped simu
+        self.current_color_zipped = Qt.gray
+        # state sent simu
+        self.current_color_sent = Qt.gray
+        self.current_color_submitted = Qt.gray
         self.i = 0
         # print("################################################################################\n")
         self.qfile_name = QFileDialog()
@@ -64,7 +70,7 @@ class RectButton(QGraphicsRectItem):
             print("You choose the file directory: ", qfile_name)
             self.id += 1
 
-        self.i = (self.i + 1) % 2
+        self.i = (self.i + 1) % 5
         print("self.i = ", self.i)
 
         self.state = np.zeros(5)
@@ -95,14 +101,24 @@ class RectButton(QGraphicsRectItem):
         # print("current index is, ", current_index_state)
 
         if current_index_state == 0:
-            self.current_color_1 = Qt.red
-            # self.current_color_1 = Qt.gray
+            self.current_color_zipped = Qt.red
         else:
-            self.current_color_1 = Qt.gray
+            self.current_color_zipped = Qt.gray
+
         if current_index_state == 1:
-            self.current_color_2 = Qt.red
+            self.current_color_sent = Qt.red
         else:
-            self.current_color_2 = Qt.gray
+            self.current_color_sent = Qt.gray
+
+        if current_index_state == 2:
+            self.current_color_submitted = Qt.red
+        else:
+            self.current_color_submitted = Qt.gray
+
+        if current_index_state == 3:
+            self.current_color_submitted = Qt.red
+        else:
+            self.current_color_submitted = Qt.gray
 
         # first rectangle, name of simulation
         qpainter.setBrush(self.current_color)
@@ -111,22 +127,22 @@ class RectButton(QGraphicsRectItem):
         # 2nd rectangle, type of simulation
         new_pos = self.x + self.width + 1
         # second rectangle
-        qpainter.setBrush(self.current_color_1)
+        qpainter.setBrush(self.current_color)
         qpainter.drawRect(new_pos, self.y, self.width, self.height)
 
         new_pos_2 = self.x + 2 * self.width + 2
-        # third rectangle
-        qpainter.setBrush(self.current_color_2)
+        # third rectangle Antares study
+        qpainter.setBrush(self.current_color)
         qpainter.drawRect(new_pos_2, self.y, self.width, self.height)
 
         new_pos_3 = self.x + 3 * self.width + 3
-        # fourth rectangle
-        qpainter.setBrush(self.current_color_2)
+        # fourth rectangle ZIPPED
+        qpainter.setBrush(self.current_color_zipped)
         qpainter.drawRect(new_pos_3, self.y, self.width, self.height)
 
         new_pos_4 = self.x + 4 * self.width + 4
-        # fourth rectangle
-        qpainter.setBrush(self.current_color_2)
+        # fourth rectangle, SENT
+        qpainter.setBrush(self.current_color_sent)
         qpainter.drawRect(new_pos_4, self.y, self.width, self.height)
 
         # boundingRect
@@ -137,26 +153,33 @@ class RectButton(QGraphicsRectItem):
         # Print SIMU NAME
         qrect = QRectF(self.x, self.y, self.width, self.height)
         qpainter.setPen(Qt.white)
-        qpainter.setFont(QFont("Times", 20))
+        qpainter.setFont(QFont("Times", self.font_size))
         qpainter.drawText(qrect, Qt.AlignCenter, self.text)
 
         # Print SIMU TYPE
+        qrect = QRectF(new_pos, self.y, self.width, self.height)
+        qpainter.setPen(Qt.white)
+        qpainter.setFont(QFont("Times", self.font_size))
+        qpainter.drawText(qrect, Qt.AlignCenter, "Antares Study")
+
+        # Print SIMU STATE ZIPPED
         qrect = QRectF(new_pos_2, self.y, self.width, self.height)
         qpainter.setPen(Qt.white)
-        qpainter.setFont(QFont("Times", 20))
-        qpainter.drawText(qrect, Qt.AlignCenter, "Antares Study")
+        qpainter.setFont(QFont("Times", self.font_size))
+        qpainter.drawText(qrect, Qt.AlignCenter, "ZIPPED")
 
         # Print SIMU STATE SENT
         qrect = QRectF(new_pos_3, self.y, self.width, self.height)
         qpainter.setPen(Qt.white)
-        qpainter.setFont(QFont("Times", 20))
+        qpainter.setFont(QFont("Times", self.font_size))
         qpainter.drawText(qrect, Qt.AlignCenter, "SENT")
 
-        # Print SIMU STATE SENT
+        # Print SIMU STATE SUBMITED
         qrect = QRectF(new_pos_4, self.y, self.width, self.height)
         qpainter.setPen(Qt.white)
-        qpainter.setFont(QFont("Times", 20))
-        qpainter.drawText(qrect, Qt.AlignCenter, "SENT")
+        qpainter.setFont(QFont("Times", self.font_size))
+        qpainter.drawText(qrect, Qt.AlignCenter, "SUBMITTED")
+
 
 class SimulationTab(QGraphicsItem):
     """

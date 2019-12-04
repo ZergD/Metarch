@@ -1,8 +1,10 @@
-from PySide2.QtCore import Qt, QPoint, Slot, QObject
+import os
+from pathlib import Path
+
+from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
-from metarch.qt_gui.scene_objects.circles import Circle
 from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton
 
 
@@ -58,7 +60,15 @@ class AntaresLauncherScene(QGraphicsScene):
         select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
         self.addItem(select_folder)
 
-        select_folder.speak.connect(self.init_all_simus_blocks)
+        # select_folder.speak.connect(self.init_all_simus_blocks)
+        simus = []
+        dir_path_name = str(Path("E:/Users/Zerg/Documents").expanduser())
+
+        for elem in os.listdir(dir_path_name):
+            if os.path.isdir(os.path.join(dir_path_name, elem)):
+                simus.append(elem)
+
+        self.init_all_simus_blocks(simus)
 
     @Slot(list)
     def init_all_simus_blocks(self, simus):
@@ -66,8 +76,13 @@ class AntaresLauncherScene(QGraphicsScene):
         for i, simu in enumerate(simus, 1):
             x = 50
             y = i * 100 + offset
-            width = 200
-            height = 50
+            # first proposition
+            # width = 200
+            # height = 50
+
+            # smaller proposition
+            width = 250
+            height = 30
             sim = RectButton(x, y, width, height, simu)
             self.addItem(sim)
 
