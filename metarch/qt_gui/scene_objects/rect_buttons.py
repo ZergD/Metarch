@@ -1,5 +1,5 @@
 import numpy as np
-from PySide2.QtCore import Qt, QRectF
+from PySide2.QtCore import Qt, QRectF, Signal, QObject
 from PySide2.QtGui import QFont
 from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsItem, QFileDialog
 
@@ -24,7 +24,7 @@ class RectButton(QGraphicsRectItem):
         """
         self.id = RectButton.ID
         RectButton.ID += 1
-        print("my self.id = ", str(self.id))
+        # print("my self.id = ", str(self.id))
         self.x = x
         self.y = y
         self.width = width
@@ -36,24 +36,19 @@ class RectButton(QGraphicsRectItem):
         # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
         self.state = np.zeros(5)
         self.state[0] = 1
-        print(self.state.any())
+        # print(self.state.any())
         # indexes = np.array(np.where(self.state == 1))
         # indexes = list(np.where(self.state == 1))
         indexes = np.where(self.state == 1)
-        print("TYPE")
-        print(type(indexes))
-        # indexes.append(3)
-        print("index state = ", indexes)
-        print("len = ", len(indexes))
 
-        print("state = \n", self.state)
+        # print("state = \n", self.state)
 
         self.mpen = scene_objects.initialize_qpen(Qt.gray)
         self.current_color = Qt.gray
         self.current_color_1 = Qt.gray
         self.current_color_2 = Qt.gray
         self.i = 0
-        print("################################################################################\n")
+        # print("################################################################################\n")
         self.qfile_name = QFileDialog()
 
     def mousePressEvent(self, q_mouse_event):
@@ -89,7 +84,7 @@ class RectButton(QGraphicsRectItem):
     def boundingRect(self):
         offset = 0.5
         # return QRectF(self.x - offset, self.y - offset, self.width * 3.25, self.height + 10)
-        return QRectF(self.x - offset, self.y - offset, self.width * 3 + 4, self.height)
+        return QRectF(self.x - offset, self.y - offset, self.width * 5 + 5, self.height)
 
     def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
         qpainter.setPen(Qt.NoPen)
@@ -124,11 +119,44 @@ class RectButton(QGraphicsRectItem):
         qpainter.setBrush(self.current_color_2)
         qpainter.drawRect(new_pos_2, self.y, self.width, self.height)
 
+        new_pos_3 = self.x + 3 * self.width + 3
+        # fourth rectangle
+        qpainter.setBrush(self.current_color_2)
+        qpainter.drawRect(new_pos_3, self.y, self.width, self.height)
+
+        new_pos_4 = self.x + 4 * self.width + 4
+        # fourth rectangle
+        qpainter.setBrush(self.current_color_2)
+        qpainter.drawRect(new_pos_4, self.y, self.width, self.height)
+
         # boundingRect
         # qpainter.setPen(Qt.cyan)
         # qpainter.setBrush(Qt.NoBrush)
         # qpainter.drawRect(self.boundingRect())
 
+        # Print SIMU NAME
+        qrect = QRectF(self.x, self.y, self.width, self.height)
+        qpainter.setPen(Qt.white)
+        qpainter.setFont(QFont("Times", 20))
+        qpainter.drawText(qrect, Qt.AlignCenter, self.text)
+
+        # Print SIMU TYPE
+        qrect = QRectF(new_pos_2, self.y, self.width, self.height)
+        qpainter.setPen(Qt.white)
+        qpainter.setFont(QFont("Times", 20))
+        qpainter.drawText(qrect, Qt.AlignCenter, "Antares Study")
+
+        # Print SIMU STATE SENT
+        qrect = QRectF(new_pos_3, self.y, self.width, self.height)
+        qpainter.setPen(Qt.white)
+        qpainter.setFont(QFont("Times", 20))
+        qpainter.drawText(qrect, Qt.AlignCenter, "SENT")
+
+        # Print SIMU STATE SENT
+        qrect = QRectF(new_pos_4, self.y, self.width, self.height)
+        qpainter.setPen(Qt.white)
+        qpainter.setFont(QFont("Times", 20))
+        qpainter.drawText(qrect, Qt.AlignCenter, "SENT")
 
 class SimulationTab(QGraphicsItem):
     """
@@ -167,8 +195,9 @@ class SimulationTab(QGraphicsItem):
         qpainter.drawRect(self.x, self.y, self.width, self.height)
 
 
-class SelectFolderButton(QGraphicsRectItem):
+class SelectFolderButton(QGraphicsRectItem, QObject):
     ID = 0
+    speak = Signal(list)
 
     def __init__(self, x, y, width, height, text):
         """
@@ -187,7 +216,9 @@ class SelectFolderButton(QGraphicsRectItem):
         self.width = width
         self.height = height
         self.text = text
-        super(SelectFolderButton, self).__init__(self.x, self.y, self.width, self.height)
+        # super(SelectFolderButton, self).__init__(self.x, self.y, self.width, self.height)
+        QObject.__init__(self)
+        QGraphicsRectItem.__init__(self, self.x, self.y, self.width, self.height)
 
         # self.text = HText("Select Folder", self.x + self.width - 20, self.y + height / 2, self, 45)
         # self.text = HText("Select Folder", self.x + 5, self.y + 5, self, 45)
@@ -229,10 +260,12 @@ class SelectFolderButton(QGraphicsRectItem):
             simus = []
             # save all directories, ie, Antares simulation
             for elem in os.listdir(dir_path_name):
-                if os.path.isdir(elem):
+                if os.path.isdir(os.path.join(dir_path_name, elem)):
                     simus.append(elem)
 
             print("List of all Simulations: ", simus)
+            if simus:
+                self.speak.emit(simus)
 
             self.id += 1
 
@@ -256,7 +289,7 @@ class SelectFolderButton(QGraphicsRectItem):
     def boundingRect(self):
         offset = 0.5
         # return QRectF(self.x - offset, self.y - offset, self.width * 3.25, self.height + 10)
-        return QRectF(self.x - offset, self.y - offset, self.width * 3 + 4, self.height)
+        return QRectF(self.x - offset, self.y - offset, self.width + 4, self.height)
 
     def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
         qpainter.setPen(Qt.NoPen)
@@ -290,3 +323,8 @@ class SelectFolderButton(QGraphicsRectItem):
         qpainter.setPen(Qt.white)
         qpainter.setFont(QFont("Times", 40))
         qpainter.drawText(qrect, Qt.AlignCenter, self.text)
+
+        # boundingRect
+        qpainter.setPen(Qt.cyan)
+        qpainter.setBrush(Qt.NoBrush)
+        qpainter.drawRect(self.boundingRect())
