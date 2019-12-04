@@ -1,3 +1,4 @@
+from PySide2.QtGui import QPainter
 from PySide2.QtWidgets import QGraphicsView, QApplication
 from PySide2.QtCore import Qt, QPoint
 
@@ -10,10 +11,13 @@ class AntaresLauncherView(QGraphicsView):
         # self.verticalScrollBar().setDisabled(True)
 
         # self.setSceneRect(self.sceneRect())
-        self.centerOn(QPoint(740, 590))
+        self.centerOn(QPoint(740, 390))
 
         # print("self.sceneRect")
         # print(self.sceneRect())
+
+        self.setRenderHint(QPainter.Antialiasing)
+
 
     def keyPressEvent(self, qkey_event):
         if qkey_event.key() == Qt.Key_Q:
