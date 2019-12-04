@@ -57,12 +57,12 @@ class AntaresLauncherScene(QGraphicsScene):
         # select_folder = SelectFolderButton(-160, -525, 300, 75, "Select Folder")
 
         # select_folder = SelectFolderButton(0, 0, 300, 75, "Select Folder")
-        select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
-        self.addItem(select_folder)
+        # select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
+        # self.addItem(select_folder)
 
         # select_folder.speak.connect(self.init_all_simus_blocks)
         simus = []
-        dir_path_name = str(Path("E:/Users/Zerg/Documents").expanduser())
+        dir_path_name = str(Path("E:/Users/Zerg/Documents"))
 
         for elem in os.listdir(dir_path_name):
             if os.path.isdir(os.path.join(dir_path_name, elem)):
@@ -81,7 +81,7 @@ class AntaresLauncherScene(QGraphicsScene):
             # height = 50
 
             # smaller proposition
-            width = 250
+            width = 350
             height = 30
             sim = RectButton(x, y, width, height, simu)
             self.addItem(sim)

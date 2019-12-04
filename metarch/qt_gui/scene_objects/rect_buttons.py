@@ -31,6 +31,9 @@ class RectButton(QGraphicsRectItem):
         self.height = height
         self.text = text
         self.font_size = 10
+
+        # this is the width of all the fields, ZIPPED, SENT, SUBMITTED, FINISHED, HOME
+        self.width_field = self.width / 4
         super(RectButton, self).__init__(self.x, self.y, self.width, self.height)
 
         # simple state array, represented as a numpy array, 0 = False, 1 = True
@@ -53,6 +56,14 @@ class RectButton(QGraphicsRectItem):
         # state sent simu
         self.current_color_sent = Qt.gray
         self.current_color_submitted = Qt.gray
+        self.current_color_finished = Qt.gray
+
+        # ZIPPED SENT SUBMITTED FINISHED HOME
+        self.states_colors = []
+        self.nb_states = 5
+        for i in range(self.nb_states):
+            self.states_colors.append(Qt.gray)
+
         self.i = 0
         # print("################################################################################\n")
         self.qfile_name = QFileDialog()
@@ -71,10 +82,13 @@ class RectButton(QGraphicsRectItem):
             self.id += 1
 
         self.i = (self.i + 1) % 5
-        print("self.i = ", self.i)
+        print("after iterating: self.i = ", self.i)
 
         self.state = np.zeros(5)
-        self.state[self.i] = 1
+        # self.state[self.i] = 1
+
+        for i in range(0, self.i + 1):
+            self.state[i] = 1
 
         self.update()
 
@@ -94,61 +108,18 @@ class RectButton(QGraphicsRectItem):
 
     def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
         qpainter.setPen(Qt.NoPen)
-        qpainter.drawRect(self.x, self.y, self.width, self.height)
-
-        current_index_state = np.where(self.state == 1)[0][0]
+        current_index_state = np.where(self.state == 1)[0]
         # print(f"RectButton[{self.id}]Being Painted...")
         # print("current index is, ", current_index_state)
-
-        if current_index_state == 0:
-            self.current_color_zipped = Qt.red
-        else:
-            self.current_color_zipped = Qt.gray
-
-        if current_index_state == 1:
-            self.current_color_sent = Qt.red
-        else:
-            self.current_color_sent = Qt.gray
-
-        if current_index_state == 2:
-            self.current_color_submitted = Qt.red
-        else:
-            self.current_color_submitted = Qt.gray
-
-        if current_index_state == 3:
-            self.current_color_submitted = Qt.red
-        else:
-            self.current_color_submitted = Qt.gray
 
         # first rectangle, name of simulation
         qpainter.setBrush(self.current_color)
         qpainter.drawRect(self.x, self.y, self.width, self.height)
 
-        # 2nd rectangle, type of simulation
-        new_pos = self.x + self.width + 1
-        # second rectangle
+        # second rectangle, type of simulation
+        pos_type_text = self.x + self.width + 1
         qpainter.setBrush(self.current_color)
-        qpainter.drawRect(new_pos, self.y, self.width, self.height)
-
-        new_pos_2 = self.x + 2 * self.width + 2
-        # third rectangle Antares study
-        qpainter.setBrush(self.current_color)
-        qpainter.drawRect(new_pos_2, self.y, self.width, self.height)
-
-        new_pos_3 = self.x + 3 * self.width + 3
-        # fourth rectangle ZIPPED
-        qpainter.setBrush(self.current_color_zipped)
-        qpainter.drawRect(new_pos_3, self.y, self.width, self.height)
-
-        new_pos_4 = self.x + 4 * self.width + 4
-        # fourth rectangle, SENT
-        qpainter.setBrush(self.current_color_sent)
-        qpainter.drawRect(new_pos_4, self.y, self.width, self.height)
-
-        # boundingRect
-        # qpainter.setPen(Qt.cyan)
-        # qpainter.setBrush(Qt.NoBrush)
-        # qpainter.drawRect(self.boundingRect())
+        qpainter.drawRect(pos_type_text, self.y, self.width, self.height)
 
         # Print SIMU NAME
         qrect = QRectF(self.x, self.y, self.width, self.height)
@@ -157,28 +128,51 @@ class RectButton(QGraphicsRectItem):
         qpainter.drawText(qrect, Qt.AlignCenter, self.text)
 
         # Print SIMU TYPE
-        qrect = QRectF(new_pos, self.y, self.width, self.height)
+        qrect = QRectF(pos_type_text, self.y, self.width, self.height)
         qpainter.setPen(Qt.white)
         qpainter.setFont(QFont("Times", self.font_size))
         qpainter.drawText(qrect, Qt.AlignCenter, "Antares Study")
 
-        # Print SIMU STATE ZIPPED
-        qrect = QRectF(new_pos_2, self.y, self.width, self.height)
-        qpainter.setPen(Qt.white)
-        qpainter.setFont(QFont("Times", self.font_size))
-        qpainter.drawText(qrect, Qt.AlignCenter, "ZIPPED")
+        # state color update part
+        # for ii in range(self.nb_states):
+        #     self.states_colors[ii] = Qt.gray
 
-        # Print SIMU STATE SENT
-        qrect = QRectF(new_pos_3, self.y, self.width, self.height)
-        qpainter.setPen(Qt.white)
-        qpainter.setFont(QFont("Times", self.font_size))
-        qpainter.drawText(qrect, Qt.AlignCenter, "SENT")
+        for index in current_index_state:
+            self.states_colors[index] = Qt.red
 
-        # Print SIMU STATE SUBMITED
-        qrect = QRectF(new_pos_4, self.y, self.width, self.height)
-        qpainter.setPen(Qt.white)
-        qpainter.setFont(QFont("Times", self.font_size))
-        qpainter.drawText(qrect, Qt.AlignCenter, "SUBMITTED")
+        print("states_colors = ", self.states_colors)
+
+        print("state = ")
+        print(self.state)
+
+        for i, color in enumerate(self.states_colors, 0):
+            new_pos = self.x + 2 * self.width + 2 + i + i * self.width_field
+            qrect = QRectF(new_pos, self.y, self.width_field, self.height)
+
+            print(f"for i = {str(i)} color = {color}")
+            qpainter.setBrush(color)
+            qpainter.setPen(Qt.NoPen)
+            qpainter.drawRect(qrect)
+
+            qpainter.setPen(Qt.white)
+            qpainter.setFont(QFont("Times", self.font_size))
+
+            if i == 0:
+                qpainter.drawText(qrect, Qt.AlignCenter, "ZIPPED")
+            elif i == 1:
+                qpainter.drawText(qrect, Qt.AlignCenter, "SENT")
+            elif i == 2:
+                qpainter.drawText(qrect, Qt.AlignCenter, "SUBMITTED")
+            elif i == 3:
+                qpainter.drawText(qrect, Qt.AlignCenter, "FINISHED")
+            elif i == 4:
+                qpainter.drawText(qrect, Qt.AlignCenter, "HOME")
+
+        # boundingRect
+        # qpainter.setPen(Qt.cyan)
+        # qpainter.setBrush(Qt.NoBrush)
+        # qpainter.drawRect(self.boundingRect())
+
 
 
 class SimulationTab(QGraphicsItem):
