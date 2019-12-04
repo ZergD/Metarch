@@ -34,7 +34,7 @@ class RectButton(QGraphicsRectItem):
 
         # this is the width of all the fields, ZIPPED, SENT, SUBMITTED, FINISHED, HOME
         self.width_field = self.width / 2
-        super(RectButton, self).__init__(self.x, self.y, self.width, self.height)
+        super(RectButton, self).__init__(self.x, self.y, self.width * 5, self.height)
 
         # simple state array, represented as a numpy array, 0 = False, 1 = True
         # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
