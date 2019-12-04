@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from PySide2.QtCore import Qt, Slot
+from PySide2.QtGui import QColor, QGradient, QLinearGradient
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
@@ -20,7 +21,16 @@ class AntaresLauncherScene(QGraphicsScene):
         self.simulations = []
 
         # ################## INIT SCENE ##################
-        self.setBackgroundBrush(Qt.black)
+        # self.setBackgroundBrush(Qt.black)
+
+        qgradient = QLinearGradient()
+        qgradient.setCoordinateMode(QGradient.ObjectBoundingMode)
+        qgradient.setColorAt(0.2, QColor("#180d28"))
+        qgradient.setColorAt(1.0, QColor("#001029"))
+
+        # self.setBackgroundBrush(QColor(17, 36, 71))
+        # self.setBackgroundBrush(QColor("#180d28"))
+        self.setBackgroundBrush(qgradient)
         self.setSceneRect(0, 0, 2000, 2000)
         # self.x = -720
         # self.y = -405
@@ -37,10 +47,10 @@ class AntaresLauncherScene(QGraphicsScene):
 
         # self.addItem(Circle(QPoint(10, 10)))
 
-        axis = scene_objects.init_visual_scene_axis()
-        for ax in axis:
-            self.addItem(ax)
-            print(f"object {ax} has been added to the scene")
+        # axis = scene_objects.init_visual_scene_axis()
+        # for ax in axis:
+        #     self.addItem(ax)
+        #     print(f"object {ax} has been added to the scene")
 
         # ####################################################
         simulations = ["BP_2019", "BP_2020", "BP_2021"]
