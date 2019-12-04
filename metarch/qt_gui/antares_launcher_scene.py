@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from PySide2.QtCore import Qt, Slot
+from PySide2.QtGui import QColor, QGradient, QLinearGradient
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
@@ -20,7 +21,18 @@ class AntaresLauncherScene(QGraphicsScene):
         self.simulations = []
 
         # ################## INIT SCENE ##################
-        self.setBackgroundBrush(Qt.black)
+        # self.setBackgroundBrush(Qt.black)
+
+        qgradient = QLinearGradient()
+        qgradient.setCoordinateMode(QGradient.ObjectBoundingMode)
+        # qgradient.setColorAt(0.2, QColor("#180d28"))
+        # qgradient.setColorAt(1.0, QColor("#001029"))
+        qgradient.setColorAt(0.2, QColor("#001029"))
+        qgradient.setColorAt(1.0, QColor("#180d28"))
+
+        # self.setBackgroundBrush(QColor(17, 36, 71))
+        # self.setBackgroundBrush(QColor("#180d28"))
+        self.setBackgroundBrush(qgradient)
         self.setSceneRect(0, 0, 2000, 2000)
         # self.x = -720
         # self.y = -405
@@ -37,10 +49,10 @@ class AntaresLauncherScene(QGraphicsScene):
 
         # self.addItem(Circle(QPoint(10, 10)))
 
-        axis = scene_objects.init_visual_scene_axis()
-        for ax in axis:
-            self.addItem(ax)
-            print(f"object {ax} has been added to the scene")
+        # axis = scene_objects.init_visual_scene_axis()
+        # for ax in axis:
+        #     self.addItem(ax)
+        #     print(f"object {ax} has been added to the scene")
 
         # ####################################################
         simulations = ["BP_2019", "BP_2020", "BP_2021"]
@@ -58,30 +70,35 @@ class AntaresLauncherScene(QGraphicsScene):
 
         # select_folder = SelectFolderButton(0, 0, 300, 75, "Select Folder")
         # select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
-        # self.addItem(select_folder)
+        select_folder = SelectFolderButton(1150, 55, 300, 75, "Select Folder")
+        self.addItem(select_folder)
 
-        # select_folder.speak.connect(self.init_all_simus_blocks)
-        simus = []
-        dir_path_name = str(Path("E:/Users/Zerg/Documents"))
-
-        for elem in os.listdir(dir_path_name):
-            if os.path.isdir(os.path.join(dir_path_name, elem)):
-                simus.append(elem)
-
-        self.init_all_simus_blocks(simus)
+        select_folder.speak.connect(self.init_all_simus_blocks)
+        # simus = []
+        # dir_path_name = str(Path("E:/Users/Zerg/Documents"))
+        #
+        # for elem in os.listdir(dir_path_name):
+        #     if os.path.isdir(os.path.join(dir_path_name, elem)):
+        #         simus.append(elem)
+        #
+        # self.init_all_simus_blocks(simus)
 
     @Slot(list)
     def init_all_simus_blocks(self, simus):
-        offset = 100
+        y_offset = 50
+        y = 100
         for i, simu in enumerate(simus, 1):
             x = 50
-            y = i * 100 + offset
+            y += 60
             # first proposition
             # width = 200
             # height = 50
 
             # smaller proposition
-            width = 350
+            # width = 350
+            # height = 30
+
+            width = 200
             height = 30
             sim = RectButton(x, y, width, height, simu)
             self.addItem(sim)
