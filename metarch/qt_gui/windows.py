@@ -12,8 +12,6 @@ class MainWindow(QMainWindow):
         self.scene = AntaresLauncherScene()
         self.view = AntaresLauncherView(self.scene)
 
-        self.layout = QVBoxLayout()
-
         self.setCentralWidget(self.view)
 
         # self.setWindowFlag(Qt.FramelessWindowHint)
