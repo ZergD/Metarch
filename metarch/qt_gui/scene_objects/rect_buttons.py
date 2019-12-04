@@ -138,7 +138,7 @@ class RectButton(QGraphicsRectItem):
             qpainter.setPen(Qt.NoPen)
 
         current_index_state = np.where(self.state == 1)[0]
-        print(f"RectButton[{self.id}]Being Painted...")
+        # print(f"RectButton[{self.id}]Being Painted...")
         # print("current index is, ", current_index_state)
 
         # first rectangle, name of simulation
