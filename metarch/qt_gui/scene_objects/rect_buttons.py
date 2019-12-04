@@ -1,6 +1,6 @@
 import numpy as np
 from PySide2.QtCore import Qt, QRectF, Signal, QObject
-from PySide2.QtGui import QFont
+from PySide2.QtGui import QFont, QColor
 from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsItem, QFileDialog
 
 from metarch.qt_gui import scene_objects
@@ -33,7 +33,7 @@ class RectButton(QGraphicsRectItem):
         self.font_size = 10
 
         # this is the width of all the fields, ZIPPED, SENT, SUBMITTED, FINISHED, HOME
-        self.width_field = self.width / 4
+        self.width_field = self.width / 2
         super(RectButton, self).__init__(self.x, self.y, self.width, self.height)
 
         # simple state array, represented as a numpy array, 0 = False, 1 = True
@@ -47,26 +47,37 @@ class RectButton(QGraphicsRectItem):
 
         # print("state = \n", self.state)
 
-        self.mpen = scene_objects.initialize_qpen(Qt.gray)
-        self.current_color = Qt.gray
-        # type simu
-        self.current_color_type = Qt.gray
-        # state zipped simu
-        self.current_color_zipped = Qt.gray
-        # state sent simu
-        self.current_color_sent = Qt.gray
-        self.current_color_submitted = Qt.gray
-        self.current_color_finished = Qt.gray
+        self.mpen = scene_objects.initialize_qpen(Qt.black, width=1)
+        # self.main_background_color = QColor("43, 43, 43")
+        # self.main_background_color = QColor("60, 63, 65")
+        self.main_background_color = Qt.gray
+        # self.current_color = Qt.gray
+        self.current_color = self.main_background_color
 
         # ZIPPED SENT SUBMITTED FINISHED HOME
         self.states_colors = []
         self.nb_states = 5
         for i in range(self.nb_states):
-            self.states_colors.append(Qt.gray)
+            # self.states_colors.append(Qt.gray)
+            self.states_colors.append(self.current_color)
 
         self.i = 0
         # print("################################################################################\n")
         self.qfile_name = QFileDialog()
+        self.setAcceptHoverEvents(True)
+        self.show_border_flag = False
+
+    def hoverEnterEvent(self, event):
+        # print("In Enter Event")
+        # self.mpen.setColor(Qt.gray)
+        self.show_border_flag = True
+        self.update()
+
+    def hoverLeaveEvent(self, event):
+        # print("Out Enter Event")
+        # self.mpen.setColor(Qt.black)
+        self.show_border_flag = False
+        self.update()
 
     def mousePressEvent(self, q_mouse_event):
         # parent = self.parentItem()
@@ -112,14 +123,22 @@ class RectButton(QGraphicsRectItem):
         #         self.parent.mousePressEvent(q_mouse_event)
 
     def boundingRect(self):
-        offset = 0.5
+        # offset = 0.5
+        offset = 1
         # return QRectF(self.x - offset, self.y - offset, self.width * 3.25, self.height + 10)
         return QRectF(self.x - offset, self.y - offset, self.width * 5 + 5, self.height)
 
     def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
-        qpainter.setPen(Qt.NoPen)
+        if self.show_border_flag:
+            self.mpen.setColor(Qt.black)
+            self.mpen.setWidth(1)
+            qpainter.setPen(self.mpen)
+            # qpainter.setPen(Qt.black)
+        else:
+            qpainter.setPen(Qt.NoPen)
+
         current_index_state = np.where(self.state == 1)[0]
-        # print(f"RectButton[{self.id}]Being Painted...")
+        print(f"RectButton[{self.id}]Being Painted...")
         # print("current index is, ", current_index_state)
 
         # first rectangle, name of simulation
@@ -127,7 +146,7 @@ class RectButton(QGraphicsRectItem):
         qpainter.drawRect(self.x, self.y, self.width, self.height)
 
         # second rectangle, type of simulation
-        pos_type_text = self.x + self.width + 1
+        pos_type_text = self.x + self.width + 2
         qpainter.setBrush(self.current_color)
         qpainter.drawRect(pos_type_text, self.y, self.width, self.height)
 
@@ -153,7 +172,7 @@ class RectButton(QGraphicsRectItem):
         # print(self.state)
 
         for i, color in enumerate(self.states_colors, 0):
-            new_pos = self.x + 2 * self.width + 2 + i + i * self.width_field
+            new_pos = self.x + 2 * self.width + i * self.width_field + (2 * i)
             qrect = QRectF(new_pos, self.y, self.width_field, self.height)
 
             # print(f"for i = {str(i)} color = {color}")
@@ -176,9 +195,14 @@ class RectButton(QGraphicsRectItem):
                 qpainter.drawText(qrect, Qt.AlignCenter, "HOME")
 
         # boundingRect
-        # qpainter.setPen(Qt.cyan)
-        # qpainter.setBrush(Qt.NoBrush)
-        # qpainter.drawRect(self.boundingRect())
+        if self.show_border_flag:
+            self.mpen.setColor(Qt.white)
+            self.mpen.setWidth(1)
+            qpainter.setPen(self.mpen)
+            qpainter.setBrush(Qt.NoBrush)
+            offset = 0.6
+            qrect = QRectF(self.x - offset, self.y - offset, self.width * 2 + self.width_field * 5 + 10, self.height)
+            qpainter.drawRect(qrect)
 
 
 class SimulationTab(QGraphicsItem):

@@ -67,32 +67,36 @@ class AntaresLauncherScene(QGraphicsScene):
         # select_folder = SelectFolderButton(-160, -525, 300, 75, "Select Folder")
 
         # select_folder = SelectFolderButton(0, 0, 300, 75, "Select Folder")
-        select_folder = SelectFolderButton(1150, 55, 300, 75, "Select Folder")
+        # select_folder = SelectFolderButton(1150, 55, 300, 75, "Select Folder")
         # select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
-        self.addItem(select_folder)
+        # self.addItem(select_folder)
 
-        select_folder.speak.connect(self.init_all_simus_blocks)
-        # simus = []
-        # dir_path_name = str(Path("E:/Users/Zerg/Documents"))
-        #
-        # for elem in os.listdir(dir_path_name):
-        #     if os.path.isdir(os.path.join(dir_path_name, elem)):
-        #         simus.append(elem)
-        #
-        # self.init_all_simus_blocks(simus)
+        # select_folder.speak.connect(self.init_all_simus_blocks)
+        simus = []
+        dir_path_name = str(Path("E:/Users/Zerg/Documents"))
+
+        for elem in os.listdir(dir_path_name):
+            if os.path.isdir(os.path.join(dir_path_name, elem)):
+                simus.append(elem)
+
+        self.init_all_simus_blocks(simus)
 
     @Slot(list)
     def init_all_simus_blocks(self, simus):
-        offset = 100
+        y_offset = 50
+        y = 100
         for i, simu in enumerate(simus, 1):
             x = 50
-            y = i * 100 + offset
+            y += 60
             # first proposition
             # width = 200
             # height = 50
 
             # smaller proposition
-            width = 350
+            # width = 350
+            # height = 30
+
+            width = 200
             height = 30
             sim = RectButton(x, y, width, height, simu)
             self.addItem(sim)
