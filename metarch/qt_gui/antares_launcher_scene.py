@@ -67,18 +67,19 @@ class AntaresLauncherScene(QGraphicsScene):
         # select_folder = SelectFolderButton(-160, -525, 300, 75, "Select Folder")
 
         # select_folder = SelectFolderButton(0, 0, 300, 75, "Select Folder")
+        select_folder = SelectFolderButton(1150, 55, 300, 75, "Select Folder")
         # select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
-        # self.addItem(select_folder)
+        self.addItem(select_folder)
 
-        # select_folder.speak.connect(self.init_all_simus_blocks)
-        simus = []
-        dir_path_name = str(Path("E:/Users/Zerg/Documents"))
-
-        for elem in os.listdir(dir_path_name):
-            if os.path.isdir(os.path.join(dir_path_name, elem)):
-                simus.append(elem)
-
-        self.init_all_simus_blocks(simus)
+        select_folder.speak.connect(self.init_all_simus_blocks)
+        # simus = []
+        # dir_path_name = str(Path("E:/Users/Zerg/Documents"))
+        #
+        # for elem in os.listdir(dir_path_name):
+        #     if os.path.isdir(os.path.join(dir_path_name, elem)):
+        #         simus.append(elem)
+        #
+        # self.init_all_simus_blocks(simus)
 
     @Slot(list)
     def init_all_simus_blocks(self, simus):
