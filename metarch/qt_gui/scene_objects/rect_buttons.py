@@ -72,23 +72,33 @@ class RectButton(QGraphicsRectItem):
         # parent = self.parentItem()
         # parent.mousePressEvent(q_mouse_event)
 
-        if self.id == 0:
-            # print("we create a QFileDialog")
-            # qfile_name = QFileDialog().getOpenFileName("Choose a Simulation Folder", str(Path.cwd()))
-            qfile_name = self.qfile_name.getExistingDirectory()
-            # print("get existing directory : ", QFileDialog().getExistingDirectory())
-            # qfile_name = QFileDialog().getOpenFileName()
-            print("You choose the file directory: ", qfile_name)
-            self.id += 1
-
         self.i = (self.i + 1) % 5
-        print("after iterating: self.i = ", self.i)
+
+        if self.state.all():
+            # print("Full 1 vector")
+            self.state = np.zeros(5)
+            self.i = 0
+
+        # if self.id == 0:
+        #     # print("we create a QFileDialog")
+        #     # qfile_name = QFileDialog().getOpenFileName("Choose a Simulation Folder", str(Path.cwd()))
+        #     qfile_name = self.qfile_name.getExistingDirectory()
+        #     # print("get existing directory : ", QFileDialog().getExistingDirectory())
+        #     # qfile_name = QFileDialog().getOpenFileName()
+        #     print("You choose the file directory: ", qfile_name)
+        #     self.id += 1
+
+        # print("after iterating: self.i = ", self.i)
 
         self.state = np.zeros(5)
         # self.state[self.i] = 1
 
         for i in range(0, self.i + 1):
             self.state[i] = 1
+
+        # print(self.state)
+
+        # current_index_state = np.where(self.state == 1)[0]
 
         self.update()
 
@@ -133,23 +143,20 @@ class RectButton(QGraphicsRectItem):
         qpainter.setFont(QFont("Times", self.font_size))
         qpainter.drawText(qrect, Qt.AlignCenter, "Antares Study")
 
-        # state color update part
-        # for ii in range(self.nb_states):
-        #     self.states_colors[ii] = Qt.gray
+        for i in range(len(self.state)):
+            if i in current_index_state:
+                self.states_colors[i] = Qt.red
+            else:
+                self.states_colors[i] = Qt.gray
 
-        for index in current_index_state:
-            self.states_colors[index] = Qt.red
-
-        print("states_colors = ", self.states_colors)
-
-        print("state = ")
-        print(self.state)
+        # print("states_colors = ", self.states_colors)
+        # print(self.state)
 
         for i, color in enumerate(self.states_colors, 0):
             new_pos = self.x + 2 * self.width + 2 + i + i * self.width_field
             qrect = QRectF(new_pos, self.y, self.width_field, self.height)
 
-            print(f"for i = {str(i)} color = {color}")
+            # print(f"for i = {str(i)} color = {color}")
             qpainter.setBrush(color)
             qpainter.setPen(Qt.NoPen)
             qpainter.drawRect(qrect)
@@ -172,7 +179,6 @@ class RectButton(QGraphicsRectItem):
         # qpainter.setPen(Qt.cyan)
         # qpainter.setBrush(Qt.NoBrush)
         # qpainter.drawRect(self.boundingRect())
-
 
 
 class SimulationTab(QGraphicsItem):
