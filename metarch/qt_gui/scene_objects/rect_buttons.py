@@ -402,14 +402,13 @@ class LaunchButton(QGraphicsRectItem, QObject):
     def mousePressEvent(self, q_mouse_event):
         # parent = self.parentItem()
         # parent.mousePressEvent(q_mouse_event)
-        print("Initiating Launch Sequence...")
+        # print("Initiating Launch Sequence...")
         print("Starting Launch Sequence...\n")
 
-        print("current dateTime = ", self.qdate_time.currentDateTime().toString())
+        # print("current dateTime = ", self.qdate_time.currentDateTime().toString())
 
         self.current_color = QColor(0, 105, 153)
         self.update()
-
 
     def mouseReleaseEvent(self, event):
         self.current_color = QColor(7, 133, 192)
@@ -492,8 +491,8 @@ class CurrentFolderDisplay(QGraphicsItem):
         # simple state array, represented as a numpy array, 0 = False, 1 = True
         # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
         self.state = np.zeros(5)
-        print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
-        print("state = ", self.state)
+        # print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
+        # print("state = ", self.state)
 
         self.mpen = scene_objects.initialize_qpen(Qt.gray)
 
@@ -514,7 +513,7 @@ class CurrentFolderDisplay(QGraphicsItem):
         # qpainter.setPen(Qt.cyan)
         # qpainter.setBrush(Qt.NoBrush)
         # qpainter.drawRect(self.boundingRect())
-# Print Label
+        # Print Label
         qrect = QRectF(self.x, self.y, self.width, self.height)
         qpainter.setPen(Qt.white)
         # qpainter.setFont(QFont("Times", 20))
@@ -524,7 +523,6 @@ class CurrentFolderDisplay(QGraphicsItem):
 
 
 class LatestLoadDisplay(QGraphicsItem):
-    speak = Signal(list)
     """
     Simulation tab is a graphical rectangular component, that display the name, type and state of a simulation
     """
@@ -548,8 +546,7 @@ class LatestLoadDisplay(QGraphicsItem):
         # simple state array, represented as a numpy array, 0 = False, 1 = True
         # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
         self.state = np.zeros(5)
-        print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
-        print("state = ", self.state)
+        # print("state = ", self.state)
 
         self.mpen = scene_objects.initialize_qpen(QColor(49, 51, 53))  # pycharm gray
         self.qdate_time = QDateTime()
@@ -583,3 +580,57 @@ class LatestLoadDisplay(QGraphicsItem):
         qpainter.drawText(qrect, Qt.AlignLeft | Qt.AlignVCenter, self.text)
 
 
+class LatestSyncDisplay(QGraphicsItem):
+    """
+    Simulation tab is a graphical rectangular component, that display the name, type and state of a simulation
+    """
+
+    def __init__(self, x, y, width, height, text):
+        """
+        A Rectangle with some text in it
+        :param text: str
+        :param x: float
+        :param y: float
+        :param height: float
+        :param width: float
+        """
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+        super(LatestSyncDisplay, self).__init__()
+
+        # simple state array, represented as a numpy array, 0 = False, 1 = True
+        self.state = np.zeros(5)
+
+        self.mpen = scene_objects.initialize_qpen(QColor(49, 51, 53))  # pycharm gray
+        self.qdate_time = QDateTime()
+
+    def boundingRect(self):
+        offset = 10
+        return QRectF(self.x - offset, self.y - offset, self.width + 2 * offset, self.height + 2 * offset)
+
+    # @Slot(list)
+    # def on_update(self, data):
+        # time = self.qdate_time.currentDateTime().toString()
+        # self.text = f" Folder last time synced : {time}"
+        # print("current dateTime = ", self.qdate_time.currentDateTime().toString())
+        # self.update()
+
+    def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
+        qpainter.setPen(self.mpen)
+        qpainter.drawRect(self.x, self.y, self.width, self.height)
+
+        # boundingRect
+        # qpainter.setPen(Qt.cyan)
+        # qpainter.setBrush(Qt.NoBrush)
+        # qpainter.drawRect(self.boundingRect())
+
+        # Print Label
+        qrect = QRectF(self.x, self.y, self.width, self.height)
+        qpainter.setPen(Qt.white)
+        # qpainter.setFont(QFont("Times", 20))
+        qpainter.setFont(QFont("Helvetica", 10))
+        # qpainter.drawText(qrect, Qt.AlignCenter, self.text)
+        qpainter.drawText(qrect, Qt.AlignLeft | Qt.AlignVCenter, self.text)
