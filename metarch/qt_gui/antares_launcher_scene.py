@@ -6,7 +6,8 @@ from PySide2.QtGui import QColor, QGradient, QLinearGradient
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
-from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton
+from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton, LaunchButton, \
+    CurrentFolderDisplay, LatestLoadDisplay
 
 
 class AntaresLauncherScene(QGraphicsScene):
@@ -58,33 +59,47 @@ class AntaresLauncherScene(QGraphicsScene):
         simulations = ["BP_2019", "BP_2020", "BP_2021"]
         positions = [(-400, 100), (-400, 300), (-400, -100)]
 
-        # for simulation in simulations:
-        #     self.addItem()
-        # for simulation, position in zip(simulations, positions):
-        #     print(f"added simulation: {simulation} at position: {position}")
-        #     sim = RectButton(position[0], position[1] - 400, 50, 200, "Hello")
-        #     self.addItem(sim)
-
-        # select_folder = RectButton(0, -525, 300, 75, "Select Folder")
-        # select_folder = SelectFolderButton(-160, -525, 300, 75, "Select Folder")
-
         # select_folder = SelectFolderButton(0, 0, 300, 75, "Select Folder")
         # select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
         select_folder = SelectFolderButton(1150, 55, 300, 75, "Select Folder")
         self.addItem(select_folder)
+        launch_button = LaunchButton(1150, 355, 300, 75, "Launch...")
+        self.addItem(launch_button)
+
+        # Text display for currentFolderDisplay
+
+        # str representing the current_dir
+        self.current_dir = None
+        self.current_dir_display = CurrentFolderDisplay(50, 30, 750, 40,
+                                                        f" Simulations loaded from folder : {self.current_dir}")
+        self.addItem(self.current_dir_display)
+        select_folder.speak.connect(self.current_dir_display.on_update)
 
         select_folder.speak.connect(self.init_all_simus_blocks)
-        # simus = []
-        # dir_path_name = str(Path("E:/Users/Zerg/Documents"))
-        #
-        # for elem in os.listdir(dir_path_name):
-        #     if os.path.isdir(os.path.join(dir_path_name, elem)):
-        #         simus.append(elem)
-        #
-        # self.init_all_simus_blocks(simus)
+
+        self.latest_load_display = LatestLoadDisplay(50, 100, 400, 30, " None")
+        self.addItem(self.latest_load_display)
+        select_folder.speak.connect(self.latest_load_display.on_update)
+
+        self.latest_sync_display = None
+
+        # ################ PART TO AUTO LOAD SIMUS ################
+        # self.auto_load_simus_blocks()
+
+    def auto_load_simus_blocks(self):
+        simus = []
+        dir_path_name = str(Path("E:/Users/Zerg/Documents"))
+
+        for elem in os.listdir(dir_path_name):
+            if os.path.isdir(os.path.join(dir_path_name, elem)):
+                simus.append(elem)
+
+        self.init_all_simus_blocks(["data", simus])
 
     @Slot(list)
-    def init_all_simus_blocks(self, simus):
+    def init_all_simus_blocks(self, data):
+        # data[0] = selected_folder_str, data[1] = simus
+        simus = data[1]
         y_offset = 50
         y = 100
         for i, simu in enumerate(simus, 1):
