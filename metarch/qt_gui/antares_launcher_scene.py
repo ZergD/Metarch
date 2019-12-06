@@ -6,7 +6,7 @@ from PySide2.QtGui import QColor, QGradient, QLinearGradient
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
-from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton
+from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton, LaunchButton
 
 
 class AntaresLauncherScene(QGraphicsScene):
@@ -72,6 +72,9 @@ class AntaresLauncherScene(QGraphicsScene):
         # select_folder = SelectFolderButton(608, 50, 300, 75, "Select Folder")
         select_folder = SelectFolderButton(1150, 55, 300, 75, "Select Folder")
         self.addItem(select_folder)
+        launch_button = LaunchButton(1150, 355, 300, 75, "Launch...")
+        self.addItem(launch_button)
+
 
         select_folder.speak.connect(self.init_all_simus_blocks)
         # simus = []
