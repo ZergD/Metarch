@@ -402,10 +402,10 @@ class LaunchButton(QGraphicsRectItem, QObject):
     def mousePressEvent(self, q_mouse_event):
         # parent = self.parentItem()
         # parent.mousePressEvent(q_mouse_event)
-        print("Initiating Launch Sequence...")
+        # print("Initiating Launch Sequence...")
         print("Starting Launch Sequence...\n")
 
-        print("current dateTime = ", self.qdate_time.currentDateTime().toString())
+        # print("current dateTime = ", self.qdate_time.currentDateTime().toString())
 
         self.current_color = QColor(0, 105, 153)
         self.update()
@@ -491,8 +491,8 @@ class CurrentFolderDisplay(QGraphicsItem):
         # simple state array, represented as a numpy array, 0 = False, 1 = True
         # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
         self.state = np.zeros(5)
-        print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
-        print("state = ", self.state)
+        # print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
+        # print("state = ", self.state)
 
         self.mpen = scene_objects.initialize_qpen(Qt.gray)
 
@@ -546,8 +546,7 @@ class LatestLoadDisplay(QGraphicsItem):
         # simple state array, represented as a numpy array, 0 = False, 1 = True
         # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
         self.state = np.zeros(5)
-        print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
-        print("state = ", self.state)
+        # print("state = ", self.state)
 
         self.mpen = scene_objects.initialize_qpen(QColor(49, 51, 53))  # pycharm gray
         self.qdate_time = QDateTime()
@@ -603,10 +602,7 @@ class LatestSyncDisplay(QGraphicsItem):
         super(LatestSyncDisplay, self).__init__()
 
         # simple state array, represented as a numpy array, 0 = False, 1 = True
-        # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
         self.state = np.zeros(5)
-        print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
-        print("state = ", self.state)
 
         self.mpen = scene_objects.initialize_qpen(QColor(49, 51, 53))  # pycharm gray
         self.qdate_time = QDateTime()

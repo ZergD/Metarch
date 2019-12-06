@@ -82,7 +82,7 @@ class AntaresLauncherScene(QGraphicsScene):
 
         self.qdate_time = QDateTime()
         time = self.qdate_time.currentDateTime().toString()
-        text = f" Folder last time synced : {time}"
+        text = f" Antares Launcher last time synced : {time}"
         self.latest_sync_display = LatestSyncDisplay(535, 100, 425, 30, text)
         self.addItem(self.latest_sync_display)
 
