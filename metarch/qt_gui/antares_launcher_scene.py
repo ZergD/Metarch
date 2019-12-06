@@ -1,13 +1,13 @@
 import os
 from pathlib import Path
 
-from PySide2.QtCore import Qt, Slot
+from PySide2.QtCore import Qt, Slot, QDateTime
 from PySide2.QtGui import QColor, QGradient, QLinearGradient
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
 from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton, LaunchButton, \
-    CurrentFolderDisplay, LatestLoadDisplay
+    CurrentFolderDisplay, LatestLoadDisplay, LatestSyncDisplay
 
 
 class AntaresLauncherScene(QGraphicsScene):
@@ -70,21 +70,24 @@ class AntaresLauncherScene(QGraphicsScene):
 
         # str representing the current_dir
         self.current_dir = None
-        self.current_dir_display = CurrentFolderDisplay(50, 30, 750, 40,
-                                                        f" Simulations loaded from folder : {self.current_dir}")
+        self.current_dir_display = CurrentFolderDisplay(50, 30, 910, 40, " Simulations not yet loaded")
         self.addItem(self.current_dir_display)
         select_folder.speak.connect(self.current_dir_display.on_update)
 
         select_folder.speak.connect(self.init_all_simus_blocks)
 
-        self.latest_load_display = LatestLoadDisplay(50, 100, 400, 30, " None")
+        self.latest_load_display = LatestLoadDisplay(50, 100, 425, 30, " Folder not yet loaded")
         self.addItem(self.latest_load_display)
         select_folder.speak.connect(self.latest_load_display.on_update)
 
-        self.latest_sync_display = None
+        self.qdate_time = QDateTime()
+        time = self.qdate_time.currentDateTime().toString()
+        text = f" Folder last time synced : {time}"
+        self.latest_sync_display = LatestSyncDisplay(535, 100, 425, 30, text)
+        self.addItem(self.latest_sync_display)
 
         # ################ PART TO AUTO LOAD SIMUS ################
-        # self.auto_load_simus_blocks()
+        self.auto_load_simus_blocks()
 
     def auto_load_simus_blocks(self):
         simus = []
@@ -94,7 +97,7 @@ class AntaresLauncherScene(QGraphicsScene):
             if os.path.isdir(os.path.join(dir_path_name, elem)):
                 simus.append(elem)
 
-        self.init_all_simus_blocks(["data", simus])
+        # self.init_all_simus_blocks(["data", simus])
 
     @Slot(list)
     def init_all_simus_blocks(self, data):
