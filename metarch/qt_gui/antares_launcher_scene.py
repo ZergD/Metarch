@@ -6,7 +6,8 @@ from PySide2.QtGui import QColor, QGradient, QLinearGradient
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
-from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton, LaunchButton, CurrentFolderDisplay
+from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton, LaunchButton, \
+    CurrentFolderDisplay, LatestLoadDisplay
 
 
 class AntaresLauncherScene(QGraphicsScene):
@@ -69,12 +70,19 @@ class AntaresLauncherScene(QGraphicsScene):
 
         # str representing the current_dir
         self.current_dir = None
-        self.current_dir_display = CurrentFolderDisplay(50, 60, 750, 40,
+        self.current_dir_display = CurrentFolderDisplay(50, 30, 750, 40,
                                                         f" Simulations loaded from folder : {self.current_dir}")
         self.addItem(self.current_dir_display)
         select_folder.speak.connect(self.current_dir_display.on_update)
 
         select_folder.speak.connect(self.init_all_simus_blocks)
+
+        self.latest_load_display = LatestLoadDisplay(50, 100, 400, 30, " None")
+        self.addItem(self.latest_load_display)
+        select_folder.speak.connect(self.latest_load_display.on_update)
+
+        self.latest_sync_display = None
+
         # ################ PART TO AUTO LOAD SIMUS ################
         # self.auto_load_simus_blocks()
 
