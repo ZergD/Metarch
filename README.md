@@ -11,6 +11,6 @@ latest load: date
 latest sync: date
 
 
-Current version: 0.2.0
+Current version: 0.2.5
 
 
