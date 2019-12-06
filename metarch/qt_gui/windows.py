@@ -1,11 +1,11 @@
-from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtWidgets import QMainWindow, QGraphicsView, QVBoxLayout, QWidget, QLabel
+from pathlib import Path
+
 from PySide2.QtCore import Qt
+from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QProgressBar
 
 from metarch.qt_gui.antares_launcher_scene import AntaresLauncherScene
 from metarch.qt_gui.antares_launcher_view import AntaresLauncherView
-
-from pathlib import Path
 
 
 class MainWindow(QMainWindow):
@@ -19,9 +19,13 @@ class MainWindow(QMainWindow):
         self.view = AntaresLauncherView(self.scene)
         self.view2 = AntaresLauncherView(self.scene)
 
+        self.progress_bar = self.init_progress_bar()
+
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.top_header)
         self.layout.addWidget(self.view)
+        # self.layout.addWidget(self.progress_bar.setContentsMargins(5, 5, 5, 5))
+        self.layout.addWidget(self.progress_bar)
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
@@ -34,6 +38,14 @@ class MainWindow(QMainWindow):
         self.setWindowFlag(Qt.MSWindowsFixedSizeDialogHint)
 
         self.setWindowTitle("Antares Launcher")
+
+    def init_progress_bar(self):
+        qprogress_bar = QProgressBar()
+        qprogress_bar.setMaximum(10)
+        qprogress_bar.setMinimum(0)
+        qprogress_bar.setValue(5)
+
+        return qprogress_bar
 
     @staticmethod
     def create_top_header_qlabel():
