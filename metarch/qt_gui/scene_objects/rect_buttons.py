@@ -1,5 +1,5 @@
 import numpy as np
-from PySide2.QtCore import Qt, QRectF, Signal, QObject
+from PySide2.QtCore import Qt, QRectF, Signal, QObject, Slot
 from PySide2.QtGui import QFont, QColor
 from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsItem, QFileDialog
 
@@ -30,7 +30,8 @@ class RectButton(QGraphicsRectItem):
         self.width = width
         self.height = height
         self.text = text
-        self.font_size = 10
+        # self.font_size = 10
+        self.font_size = 12
 
         # this is the width of all the fields, ZIPPED, SENT, SUBMITTED, FINISHED, HOME
         self.width_field = self.width / 2
@@ -205,43 +206,6 @@ class RectButton(QGraphicsRectItem):
             qpainter.drawRect(qrect)
 
 
-class SimulationTab(QGraphicsItem):
-    """
-    Simulation tab is a graphical rectangular component, that display the name, type and state of a simulation
-    """
-
-    def __init__(self, x, y, height, width, text):
-        """
-        A Rectangle with some text in it
-        :param text: str
-        :param x: float
-        :param y: float
-        :param height: float
-        :param width: float
-        """
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.text = text
-        super(SimulationTab, self).__init__(self.x, self.y, self.width, self.height)
-
-        # simple state array, represented as a numpy array, 0 = False, 1 = True
-        # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
-        self.state = np.zeros(5)
-        print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
-        print("state = ", self.state)
-
-        self.mpen = scene_objects.initialize_qpen(Qt.gray)
-
-    def boundingRect(self):
-        pass
-
-    def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
-        qpainter.setPen(self.mpen)
-        qpainter.drawRect(self.x, self.y, self.width, self.height)
-
-
 class SelectFolderButton(QGraphicsRectItem, QObject):
     ID = 0
     speak = Signal(list)
@@ -292,19 +256,20 @@ class SelectFolderButton(QGraphicsRectItem, QObject):
         self.current_color_2 = Qt.gray
         self.i = 0
         print("################################################################################\n")
-        self.qfile_name = QFileDialog()
+        self.qfile_dialog = QFileDialog()
 
     def mousePressEvent(self, q_mouse_event):
         # parent = self.parentItem()
         # parent.mousePressEvent(q_mouse_event)
 
-        if self.id == 0:
-            dir_path_name = self.qfile_name.getExistingDirectory()
+        if self.id % 2 == 0:
+            dir_path_name = self.qfile_dialog.getExistingDirectory()
             # print("get existing directory : ", QFileDialog().getExistingDirectory())
             # qfile_name = QFileDialog().getOpenFileName()
             print("You choose the file directory: ", dir_path_name)
 
             simus = []
+            data = [dir_path_name, simus]
             # save all directories, ie, Antares simulation
             for elem in os.listdir(dir_path_name):
                 if os.path.isdir(os.path.join(dir_path_name, elem)):
@@ -312,15 +277,16 @@ class SelectFolderButton(QGraphicsRectItem, QObject):
 
             print("List of all Simulations: ", simus)
             if simus:
-                self.speak.emit(simus)
+                if data:
+                    self.speak.emit(data)
 
-            self.id += 1
+        self.id += 1
 
-        self.i = (self.i + 1) % 2
-        print("self.i = ", self.i)
-
-        self.state = np.zeros(5)
-        self.state[self.i] = 1
+        # self.i = (self.i + 1) % 3
+        # print("self.i = ", self.i)
+        #
+        # self.state = np.zeros(5)
+        # self.state[self.i] = 1
 
         self.update()
 
@@ -521,3 +487,61 @@ class LaunchButton(QGraphicsRectItem, QObject):
         # qpainter.setPen(Qt.cyan)
         # qpainter.setBrush(Qt.NoBrush)
         # qpainter.drawRect(self.boundingRect())
+
+
+class CurrentFolderDisplay(QGraphicsItem):
+    """
+    Simulation tab is a graphical rectangular component, that display the name, type and state of a simulation
+    """
+
+    def __init__(self, x, y, width, height, text):
+        """
+        A Rectangle with some text in it
+        :param text: str
+        :param x: float
+        :param y: float
+        :param height: float
+        :param width: float
+        """
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+        super(CurrentFolderDisplay, self).__init__()
+
+        # simple state array, represented as a numpy array, 0 = False, 1 = True
+        # [0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED
+        self.state = np.zeros(5)
+        print("[0] = ZIPPED, [1] = SENT, [2] = SUBMITTED, [3] = FINISHED, [4] = DELIVERED")
+        print("state = ", self.state)
+
+        self.mpen = scene_objects.initialize_qpen(Qt.gray)
+
+    def boundingRect(self):
+        offset = 10
+        return QRectF(self.x - offset, self.y - offset, self.width + 2 * offset, self.height + 2 * offset)
+
+    @Slot(list)
+    def on_update(self, data):
+        self.text = f" Simulations loaded from folder : {data[0]}"
+        self.update()
+
+    def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
+        qpainter.setPen(self.mpen)
+        qpainter.drawRect(self.x, self.y, self.width, self.height)
+
+        # boundingRect
+        # qpainter.setPen(Qt.cyan)
+        # qpainter.setBrush(Qt.NoBrush)
+        # qpainter.drawRect(self.boundingRect())
+
+        # Print Label
+        qrect = QRectF(self.x, self.y, self.width, self.height)
+        qpainter.setPen(Qt.white)
+        # qpainter.setFont(QFont("Times", 20))
+        qpainter.setFont(QFont("Helvetica", 15))
+        # qpainter.drawText(qrect, Qt.AlignCenter, self.text)
+        qpainter.drawText(qrect, Qt.AlignLeft | Qt.AlignVCenter, self.text)
+
+
