@@ -15,11 +15,11 @@ class MainWindow(QMainWindow):
 
         self.top_header = self.create_top_header_qlabel()
 
-        self.scene = AntaresLauncherScene()
+        self.progress_bar = self.init_progress_bar()
+
+        self.scene = AntaresLauncherScene(self.progress_bar)
         self.view = AntaresLauncherView(self.scene)
         self.view2 = AntaresLauncherView(self.scene)
-
-        self.progress_bar = self.init_progress_bar()
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.top_header)
@@ -41,9 +41,9 @@ class MainWindow(QMainWindow):
 
     def init_progress_bar(self):
         qprogress_bar = QProgressBar()
-        qprogress_bar.setMaximum(10)
         qprogress_bar.setMinimum(0)
-        qprogress_bar.setValue(5)
+        qprogress_bar.setMaximum(5)
+        qprogress_bar.setValue(0)
 
         return qprogress_bar
 

@@ -10,8 +10,9 @@ import os
 from metarch.qt_gui.scene_objects.texts import HText
 
 
-class RectButton(QGraphicsRectItem):
+class RectButton(QGraphicsRectItem, QObject):
     ID = 0
+    speak = Signal(list)
 
     def __init__(self, x, y, width, height, text):
         """
@@ -35,6 +36,7 @@ class RectButton(QGraphicsRectItem):
 
         # this is the width of all the fields, ZIPPED, SENT, SUBMITTED, FINISHED, HOME
         self.width_field = self.width / 2
+        QObject.__init__(self)
         super(RectButton, self).__init__(self.x, self.y, self.width * 5, self.height)
 
         # simple state array, represented as a numpy array, 0 = False, 1 = True
@@ -83,6 +85,8 @@ class RectButton(QGraphicsRectItem):
     def mousePressEvent(self, q_mouse_event):
         # parent = self.parentItem()
         # parent.mousePressEvent(q_mouse_event)
+        if self.id == 0:
+            self.speak.emit([self.i + 1])
 
         self.i = (self.i + 1) % 5
 
