@@ -15,7 +15,7 @@ class AntaresLauncherScene(QGraphicsScene):
     Size of the scene has to be: [1440, 810], ie,  x = -720, y, -405, width = 1440, height = 810
     """
 
-    def __init__(self):
+    def __init__(self, progress_bar):
         super(AntaresLauncherScene, self).__init__()
 
         # ################## DATA PART ##################
@@ -23,6 +23,7 @@ class AntaresLauncherScene(QGraphicsScene):
 
         # ################## INIT SCENE ##################
         # self.setBackgroundBrush(Qt.black)
+        self.progress_bar = progress_bar
 
         qgradient = QLinearGradient()
         qgradient.setCoordinateMode(QGradient.ObjectBoundingMode)
@@ -119,10 +120,22 @@ class AntaresLauncherScene(QGraphicsScene):
             width = 200
             height = 30
             sim = RectButton(x, y, width, height, simu)
+
+            if i == 1:
+                sim.speak.connect(self.change_progress_bar_event)
+
             self.addItem(sim)
 
         # self.setSceneRect(0.0, 0.0, 1440, 810 + len(simus) * 100)
         # self.setSceneRect(self.x, self.y, self.width, self.height + len(simus) * 100)
+
+    @Slot(list)
+    def change_progress_bar_event(self, value: list):
+        print("change progress bar event executed...")
+        print("we set progress bar value to : ", value[0])
+        self.progress_bar.setValue(value[0])
+        self.progress_bar.update()
+        print("print current value of progress bar is ", self.progress_bar.value())
 
     # def mousePressEvent(self, event):
     #     if event.buttons() == Qt.LeftButton:
