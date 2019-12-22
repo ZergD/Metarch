@@ -129,9 +129,9 @@ class RectButton(QGraphicsRectItem, QObject):
 
     def boundingRect(self):
         # offset = 0.5
-        offset = 1
+        offset = 2
         # return QRectF(self.x - offset, self.y - offset, self.width * 3.25, self.height + 10)
-        return QRectF(self.x - offset, self.y - offset, self.width * 5 + 5, self.height)
+        return QRectF(self.x - offset, self.y - offset, self.width * 5 + 5, self.height + 2 * offset)
 
     def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
         if self.show_border_flag:
@@ -197,9 +197,9 @@ class RectButton(QGraphicsRectItem, QObject):
             elif i == 3:
                 qpainter.drawText(qrect, Qt.AlignCenter, "FINISHED")
             elif i == 4:
-                qpainter.drawText(qrect, Qt.AlignCenter, "HOME")
+                qpainter.drawText(qrect, Qt.AlignCenter, "DONE")
 
-        # boundingRect
+        # hover highlight effect
         if self.show_border_flag:
             self.mpen.setColor(Qt.white)
             self.mpen.setWidth(1)
@@ -208,6 +208,11 @@ class RectButton(QGraphicsRectItem, QObject):
             offset = 0.6
             qrect = QRectF(self.x - offset, self.y - offset, self.width * 2 + self.width_field * 5 + 10, self.height)
             qpainter.drawRect(qrect)
+
+        # boundingRect
+        # qpainter.setPen(Qt.cyan)
+        # qpainter.setBrush(Qt.NoBrush)
+        # qpainter.drawRect(self.boundingRect())
 
 
 class SelectFolderButton(QGraphicsRectItem, QObject):

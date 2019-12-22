@@ -98,7 +98,7 @@ class AntaresLauncherScene(QGraphicsScene):
             if os.path.isdir(os.path.join(dir_path_name, elem)):
                 simus.append(elem)
 
-        # self.init_all_simus_blocks(["data", simus])
+        self.init_all_simus_blocks(["data", simus])
 
     @Slot(list)
     def init_all_simus_blocks(self, data):
