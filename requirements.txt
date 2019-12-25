@@ -1,2 +1,4 @@
 Pyside2
 numpy
+pdfminer
+PyPDF2

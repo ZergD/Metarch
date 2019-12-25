@@ -4,6 +4,7 @@ import sys
 
 from metarch.core import qt_app
 from metarch.core.alphadeesp import AlphaDeesp
+from metarch.core.bus_query import BusQuery
 from metarch.katas import kata1
 
 
@@ -39,6 +40,11 @@ def is_help_in_args(argv):
 
 
 if __name__ == "__main__":
+    """
+    --something is for option
+    run.py something should launch something.
+    """
+
     print("sysargv = ", sys.argv)
 
     # print(f"There is -h in sysargv: {is_help_in_args(sys.argv)}")
@@ -74,12 +80,23 @@ if __name__ == "__main__":
         print("--hots-load,"
               "--hots-compute")
 
-    elif "--kata1" in sys.argv:
+    elif "kata1" in sys.argv:
         print("launching Kata1 module...")
         kata1.run()
 
     elif "qt" in sys.argv:
-        print("Starting Qt Qml example")
-
+        print("Starting Qt Qml example...")
         app = qt_app.run(sys)
         sys.exit(app)
+
+    elif "bq" in sys.argv:
+        print("Starting Bus Query example...")
+        bus_query = BusQuery()
+        bus_query.run()
+
+
+
+
+
+
+
