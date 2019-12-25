@@ -1,13 +1,13 @@
 import os
 from pathlib import Path
 
-from PySide2.QtCore import Qt, Slot, QDateTime
+from PySide2.QtCore import Qt, Slot, QDateTime, QPoint
 from PySide2.QtGui import QColor, QGradient, QLinearGradient
 from PySide2.QtWidgets import QGraphicsScene
 
 from metarch.qt_gui import scene_objects
 from metarch.qt_gui.scene_objects.rect_buttons import RectButton, SelectFolderButton, LaunchButton, \
-    CurrentFolderDisplay, LatestLoadDisplay, LatestSyncDisplay
+    CurrentFolderDisplay, LatestLoadDisplay, LatestSyncDisplay, Circle
 
 
 class AntaresLauncherScene(QGraphicsScene):
@@ -90,6 +90,8 @@ class AntaresLauncherScene(QGraphicsScene):
         # ################ PART TO AUTO LOAD SIMUS ################
         self.auto_load_simus_blocks()
 
+        self.addItem(Circle(QPoint(1200, 600), 10))
+
     def auto_load_simus_blocks(self):
         simus = []
         dir_path_name = str(Path("E:/Users/Zerg/Documents"))
@@ -137,6 +139,6 @@ class AntaresLauncherScene(QGraphicsScene):
         self.progress_bar.update()
         print("print current value of progress bar is ", self.progress_bar.value())
 
-    # def mousePressEvent(self, event):
-    #     if event.buttons() == Qt.LeftButton:
-    #         print(f"You clicked on position [{event.scenePos().x()}, {event.scenePos().y()}]")
+    def mousePressEvent(self, event):
+        if event.buttons() == Qt.LeftButton:
+            print(f"You clicked on position [{event.scenePos().x()}, {event.scenePos().y()}]")

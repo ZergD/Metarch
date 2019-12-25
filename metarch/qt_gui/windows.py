@@ -39,7 +39,8 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Antares Launcher")
 
-    def init_progress_bar(self):
+    @staticmethod
+    def init_progress_bar():
         qprogress_bar = QProgressBar()
         qprogress_bar.setMinimum(0)
         qprogress_bar.setMaximum(5)

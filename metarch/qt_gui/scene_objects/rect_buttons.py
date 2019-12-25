@@ -10,6 +10,26 @@ import os
 from metarch.qt_gui.scene_objects.texts import HText
 
 
+class Circle(QGraphicsItem):
+    def __init__(self, position, radius):
+        super(Circle, self).__init__()
+
+        self.position = position
+        self.radius = radius
+        self.diametre = 2 * self.radius
+
+    def boundingRect(self):
+        qrect = QRectF(self.position.x() - 50, self.position.y() - 50, self.diametre + 70, self.diametre + 70)
+        return qrect
+
+    def paint(self, QPainter, QStyleOptionGraphicsItem, widget=None):
+        print("this is printed")
+        QPainter.setBrush(Qt.cyan)
+        QPainter.drawEllipse(self.position, self.diametre + 4, self.diametre + 4)
+        QPainter.setBrush(Qt.red)
+        QPainter.drawEllipse(self.position, self.diametre, self.diametre)
+
+
 class RectButton(QGraphicsRectItem, QObject):
     ID = 0
     speak = Signal(list)
@@ -129,7 +149,7 @@ class RectButton(QGraphicsRectItem, QObject):
 
     def boundingRect(self):
         # offset = 0.5
-        offset = 2
+        offset = 8
         # return QRectF(self.x - offset, self.y - offset, self.width * 3.25, self.height + 10)
         return QRectF(self.x - offset, self.y - offset, self.width * 5 + 5, self.height + 2 * offset)
 
@@ -210,9 +230,9 @@ class RectButton(QGraphicsRectItem, QObject):
             qpainter.drawRect(qrect)
 
         # boundingRect
-        # qpainter.setPen(Qt.cyan)
-        # qpainter.setBrush(Qt.NoBrush)
-        # qpainter.drawRect(self.boundingRect())
+        qpainter.setPen(Qt.cyan)
+        qpainter.setBrush(Qt.NoBrush)
+        qpainter.drawRect(self.boundingRect())
 
 
 class SelectFolderButton(QGraphicsRectItem, QObject):
