@@ -1,6 +1,6 @@
 import numpy as np
 from PySide2.QtCore import Qt, QRectF, Signal, QObject, Slot, QDateTime
-from PySide2.QtGui import QFont, QColor
+from PySide2.QtGui import QFont, QColor, QPen
 from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsItem, QFileDialog
 
 from metarch.qt_gui import scene_objects
@@ -458,8 +458,8 @@ class LaunchButton(QGraphicsRectItem, QObject):
         return QRectF(self.x - offset, self.y - offset, self.width + 4, self.height)
 
     def paint(self, qpainter, qstyle_option_graphics_item, widget=None):
-        qpainter.setPen(Qt.NoPen)
-        qpainter.drawRect(self.x, self.y, self.width, self.height)
+        # qpainter.setPen(Qt.NoPen)
+        # qpainter.drawRect(self.x, self.y, self.width, self.height)
 
         current_index_state = np.where(self.state == 1)[0][0]
         # print(f"RectButton[{self.id}]Being Painted...")
@@ -476,13 +476,25 @@ class LaunchButton(QGraphicsRectItem, QObject):
         #     self.current_color_2 = Qt.gray
 
         # first rectangle, name of simulation
-        qpainter.setBrush(self.current_color)
-        qpainter.drawRect(self.x, self.y, self.width, self.height)
+        # qpainter.setBrush(self.current_color)
+        # qpainter.drawRect(self.x, self.y, self.width, self.height)
+        #
+        # qpainter.setPen(self.mpen)
 
-        qpainter.setPen(self.mpen)
-        # surrounding design
-        qrect_surround = QRectF(self.x - 2, self.y - 2, self.width + 4, self.height + 4)
+        mpen = scene_objects.initialize_qpen(Qt.black, width=3)
+        qpainter.setPen(mpen)
+        qpainter.setBrush(Qt.cyan)
+        # # surrounding design
+        offset = 6
+        qrect_surround = QRectF(self.x - offset, self.y - offset, self.width + 2 * offset, self.height + 2 * offset)
         qpainter.drawRect(qrect_surround)
+
+        qpainter.setBrush(Qt.red)
+        qrect_surround = QRectF(self.x, self.y, self.width, self.height)
+        qpainter.drawRect(qrect_surround)
+
+        # qpainter.setBrush(self.mpen.color())
+
 
         # Print Label
         qrect = QRectF(self.x, self.y, self.width, self.height)
