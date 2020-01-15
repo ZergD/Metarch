@@ -63,7 +63,8 @@ class BusQuery:
 
 
         # find_bus_1_next_schedule()
-        new_test()
+        # new_test_local()
+        new_test_online()
 
         # for todo_item in page.json():
         #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
@@ -136,10 +137,19 @@ def new_test_local():
             # numbers = [int(s) for s in str.split(text_draft) if s.isdigit()]
             # print(numbers)
 
-            # break
-            # print(item.get("hour"))
 
+def new_test_online():
+    url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-rue-thiers/012-EXPR1-50012166-50012309"
+    page_data = requests.get(url, "html")
+    soup = BeautifulSoup(page_data.content, "html.parser")
+    for item in soup.findAll('div', {"class": "schedule-line"}):
+        text_draft = str(item.text)
 
+        # here
+        temp = re.findall(r'\d+', text_draft)
+        res = list(map(int, temp))
+        print(res)
+        # break
 
 
 def format_results(result: dict):
