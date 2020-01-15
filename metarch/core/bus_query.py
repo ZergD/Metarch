@@ -10,7 +10,7 @@ class BusQuery:
         print("BusQuery created...")
         self.name = "Metarch"
 
-    def run(self):
+    def run_works_manages_to_read_pdf(self):
         """
         Test with PyPDF2, works but the output needs a lot of work to get info we need out of it.
         Returns: None
@@ -32,7 +32,7 @@ class BusQuery:
         first_page_text = page_obj.extractText()
         print(first_page_text)
 
-    def run2(self):
+    def run(self):
         """
         Test with
         Returns:
@@ -40,11 +40,4 @@ class BusQuery:
         """
         print(f"{self.name} starting run function")
 
-
-
-
-
-
-
-
-
+        url = "https://www.ratp.fr/horaires-bus?network-current=busratp&networks=busratp&line_busratp=259&name_line_busratp=Saint-Germain-En-Laye+RER+%2F+Nanterre-Anatole+France&id_line_busratp=B259&id_t_line_busratp=&line_noctilien=&name_line_noctilien=&id_line_noctilien=&id_t_line_noctilien=&stop_point_busratp=Jaures&type=now&departure_date=15%2F01%2F2020&departure_hour=11&departure_minute=45&op=Rechercher&is_mobile=&form_build_id=form-7ePstc1FyFoNlx5G3llUHdQlfp3VeQxayuYUj4gIzY8&form_id=scheduledform"
