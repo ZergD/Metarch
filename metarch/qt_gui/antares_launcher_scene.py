@@ -94,7 +94,7 @@ class AntaresLauncherScene(QGraphicsScene):
 
     def auto_load_simus_blocks(self):
         simus = []
-        dir_path_name = str(Path("E:/Users/Zerg/Documents"))
+        dir_path_name = str(Path().home())
 
         for elem in os.listdir(dir_path_name):
             if os.path.isdir(os.path.join(dir_path_name, elem)):
