@@ -4,6 +4,15 @@ import PyPDF2
 import os
 import pdfminer
 
+import requests
+import pprint
+from bs4 import BeautifulSoup
+import urllib.request
+
+
+import json
+from html.parser import HTMLParser
+
 
 class BusQuery:
     def __init__(self):
@@ -40,4 +49,111 @@ class BusQuery:
         """
         print(f"{self.name} starting run function")
 
-        url = "https://www.ratp.fr/horaires-bus?network-current=busratp&networks=busratp&line_busratp=259&name_line_busratp=Saint-Germain-En-Laye+RER+%2F+Nanterre-Anatole+France&id_line_busratp=B259&id_t_line_busratp=&line_noctilien=&name_line_noctilien=&id_line_noctilien=&id_t_line_noctilien=&stop_point_busratp=Jaures&type=now&departure_date=15%2F01%2F2020&departure_hour=11&departure_minute=45&op=Rechercher&is_mobile=&form_build_id=form-7ePstc1FyFoNlx5G3llUHdQlfp3VeQxayuYUj4gIzY8&form_id=scheduledform"
+        task = {"bus", "259"}
+
+        # page = url_buses_destinations(259)
+        page = url_bus_horaire()
+
+        print("we are querying this page: ", page)
+        response = requests.get(page)
+        # res is a dict
+        res = response.json()
+        pprint.pprint(res)
+
+        print(format_results(res))
+
+
+        # find_bus_1_next_schedule()
+        # new_test()
+
+        # for todo_item in page.json():
+        #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
+
+        # soup = BeautifulSoup(page.content, "html.parser")
+        # results = soup.find(id="main-content")
+        # results = soup.find(id="ixxi-horaire-result")
+        # results = soup.find(id="challenge-form")
+        # print(results)
+
+        # response = urllib.request.urlopen(url)
+        # html = response.read()
+        # text = html.decode()
+        # print(text)
+
+
+def find_bus_1_next_schedule():
+    url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-gare-de-versailles-chantiers-gare-routiere/012-EXPR1-50012165-591361744"
+    local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
+    print("local path is ", local_path)
+
+    page_data = Path.open(local_path)
+    soup = BeautifulSoup(page_data, "html.parser")
+
+    # page_data = requests.get(url, "html")
+    # print(page_data.content)
+    # soup = BeautifulSoup(page_data.content, "html.parser")
+
+    for item in soup.findAll('div', {"class": "schedule-line"}):
+        print(item)
+
+    # print("we are querying this page: ", page)
+    # response = requests.get(page)
+    # res = response.json()
+    # pprint.pprint(res)
+
+
+def new_test():
+    local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
+    with open(str(local_path), "r") as f:
+        content = f.read()
+        soup = BeautifulSoup(content, "lxml")
+
+        for item in soup.findAll('div', {"class": "schedule-line"}):
+            print(item.content)
+            print(type(item))
+            # print(item.text)
+            break
+            # print(item.get("hour"))
+
+
+
+
+def format_results(result: dict):
+
+    bus_hours = []
+    res = result["result"]["schedules"]
+    for bus in res:
+        bus_hours.append(bus["message"])
+
+    print("all the upcoming buses are : ", bus_hours)
+    print(res)
+
+    first_bus = [int(s) for s in str.split(bus_hours[0]) if s.isdigit()][0]
+    second_bus = [int(s) for s in str.split(bus_hours[1]) if s.isdigit()][0]
+
+    return f"\nLes prochains bus 259 pour Saint Germain en Laye sont dans {first_bus} et {second_bus}\n"
+
+
+def url_buses_destinations(bus_number: int):
+    url = "https://api-ratp.pierre-grimaud.fr/v4/"
+    return url + "destinations/buses/" + str(bus_number)
+
+
+def url_bus_horaire():
+    return "https://api-ratp.pierre-grimaud.fr/v4/schedules/buses/259/jaures/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
