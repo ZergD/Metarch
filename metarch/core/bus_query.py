@@ -12,6 +12,7 @@ import urllib.request
 
 import json
 from html.parser import HTMLParser
+import re
 
 
 class BusQuery:
@@ -49,22 +50,20 @@ class BusQuery:
         """
         print(f"{self.name} starting run function")
 
-        task = {"bus", "259"}
-
-        # page = url_buses_destinations(259)
-        page = url_bus_horaire()
-
-        print("we are querying this page: ", page)
-        response = requests.get(page)
-        # res is a dict
-        res = response.json()
-        pprint.pprint(res)
-
-        print(format_results(res))
+        # # page = url_buses_destinations(259)
+        # page = url_bus_horaire()
+        #
+        # print("we are querying this page: ", page)
+        # response = requests.get(page)
+        # # res is a dict
+        # res = response.json()
+        # pprint.pprint(res)
+        #
+        # print(format_results(res))
 
 
         # find_bus_1_next_schedule()
-        # new_test()
+        new_test()
 
         # for todo_item in page.json():
         #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
@@ -82,7 +81,13 @@ class BusQuery:
 
 
 def find_bus_1_next_schedule():
-    url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-gare-de-versailles-chantiers-gare-routiere/012-EXPR1-50012165-591361744"
+    # url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-gare-de-versailles-chantiers-gare-routiere/012-EXPR1-50012165-591361744"
+
+    url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-rue-thiers/012-EXPR1-50012166-50012309"
+
+
+
+
     local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
     print("local path is ", local_path)
 
@@ -102,17 +107,36 @@ def find_bus_1_next_schedule():
     # pprint.pprint(res)
 
 
-def new_test():
+def new_test_local():
     local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
     with open(str(local_path), "r") as f:
         content = f.read()
         soup = BeautifulSoup(content, "lxml")
 
         for item in soup.findAll('div', {"class": "schedule-line"}):
-            print(item.content)
-            print(type(item))
+            # print(item.content)
+            # print(type(item))
             # print(item.text)
-            break
+            # text_draft = "05 h\n        \n                   46\n                01\n"
+            text_draft = str(item.text)
+
+            # here
+            temp = re.findall(r'\d+', text_draft)
+            res = list(map(int, temp))
+            print(res)
+
+            # for elem in (str.split(text_draft)):
+            #     print("elem: ", elem)
+            #     for sub_elem in str.split(elem):
+            #         print(sub_elem)
+            #         print(type(sub_elem))
+
+
+            # print(str.split(text_draft))
+            # numbers = [int(s) for s in str.split(text_draft) if s.isdigit()]
+            # print(numbers)
+
+            # break
             # print(item.get("hour"))
 
 
