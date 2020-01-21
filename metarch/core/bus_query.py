@@ -1,18 +1,10 @@
+import re
+from datetime import time, timedelta
 from pathlib import Path
 
 import PyPDF2
-import os
-import pdfminer
-
 import requests
-import pprint
 from bs4 import BeautifulSoup
-import urllib.request
-
-
-import json
-from html.parser import HTMLParser
-import re
 
 
 class BusQuery:
@@ -61,7 +53,6 @@ class BusQuery:
         #
         # print(format_results(res))
 
-
         # find_bus_1_next_schedule()
         new_test_local()
         # new_test_online()
@@ -85,9 +76,6 @@ def find_bus_1_next_schedule():
     # url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-gare-de-versailles-chantiers-gare-routiere/012-EXPR1-50012165-591361744"
 
     url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-rue-thiers/012-EXPR1-50012166-50012309"
-
-
-
 
     local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
     print("local path is ", local_path)
@@ -114,6 +102,7 @@ def new_test_local():
         content = f.read()
         soup = BeautifulSoup(content, "lxml")
 
+        time_schedules = []
         for item in soup.findAll('div', {"class": "schedule-line"}):
             # print(item.content)
             # print(type(item))
@@ -124,7 +113,16 @@ def new_test_local():
             # here find all integers in text
             temp = re.findall(r'\d+', text_draft)
             res = list(map(int, temp))
+            #
             print(res)
+
+            first_time = time(5, 0, 0)
+
+            _hour = res[0]
+            for elem in res[1:]:
+                t = time(_hour, elem, 0)
+                time_schedules.append(t)
+                # print(t)
 
             # for elem in (str.split(text_draft)):
             #     print("elem: ", elem)
@@ -132,10 +130,28 @@ def new_test_local():
             #         print(sub_elem)
             #         print(type(sub_elem))
 
-
             # print(str.split(text_draft))
             # numbers = [int(s) for s in str.split(text_draft) if s.isdigit()]
             # print(numbers)
+            print("#########################################")
+
+        # test if for example, current_time = 8h30, what is the next bus
+        # current_time = time(8, 30, 0)
+        # current_time = time(9, 30, 0)
+        # current_time = time(12, 28, 0)
+        current_time = time(0, 2, 0)
+
+        next_bus_schedule = find_next_bus_1(current_time, time_schedules)
+
+
+def find_next_bus_1(current_time: time, time_schedules: list):
+    for t in time_schedules:
+        # the first iteration when the time schedule is > ie incoming, return that time
+        if t > current_time:
+            print(f"current time being: {current_time}, the next bus is : {t}")
+            return t
+
+
 
 
 def new_test_online():
@@ -153,7 +169,6 @@ def new_test_online():
 
 
 def format_results(result: dict):
-
     bus_hours = []
     res = result["result"]["schedules"]
     for bus in res:
@@ -175,19 +190,3 @@ def url_buses_destinations(bus_number: int):
 
 def url_bus_horaire():
     return "https://api-ratp.pierre-grimaud.fr/v4/schedules/buses/259/jaures/A"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
