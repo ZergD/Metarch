@@ -137,9 +137,9 @@ def new_test_local():
 
         # test if for example, current_time = 8h30, what is the next bus
         # current_time = time(8, 30, 0)
-        # current_time = time(9, 30, 0)
+        current_time = time(9, 30, 0)
         # current_time = time(12, 28, 0)
-        current_time = time(0, 2, 0)
+        # current_time = time(0, 2, 0)
 
         next_bus_schedule = find_next_bus_1(current_time, time_schedules)
 
@@ -148,7 +148,8 @@ def find_next_bus_1(current_time: time, time_schedules: list):
     for t in time_schedules:
         # the first iteration when the time schedule is > ie incoming, return that time
         if t > current_time:
-            print(f"current time being: {current_time}, the next bus is : {t}")
+            delta_minutes = t.minute - current_time.minute
+            print(f"current time being: {current_time}, the next bus is : {t}, in {delta_minutes} mins")
             return t
 
 
