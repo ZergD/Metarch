@@ -63,8 +63,8 @@ class BusQuery:
 
 
         # find_bus_1_next_schedule()
-        # new_test_local()
-        new_test_online()
+        new_test_local()
+        # new_test_online()
 
         # for todo_item in page.json():
         #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
@@ -121,7 +121,7 @@ def new_test_local():
             # text_draft = "05 h\n        \n                   46\n                01\n"
             text_draft = str(item.text)
 
-            # here
+            # here find all integers in text
             temp = re.findall(r'\d+', text_draft)
             res = list(map(int, temp))
             print(res)
