@@ -5,6 +5,7 @@ from pathlib import Path
 import PyPDF2
 import requests
 from bs4 import BeautifulSoup
+import pprint
 
 
 class BusQuery:
@@ -54,8 +55,9 @@ class BusQuery:
         # print(format_results(res))
 
         # find_bus_1_next_schedule()
-        new_test_local()
-        # new_test_online()
+        # new_test_local()
+        # new_test_ligne_1_online_vers_saint_germain()
+        new_test_ligne_10_online_vers_saint_germain()
 
         # for todo_item in page.json():
         #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
@@ -153,12 +155,19 @@ def find_next_bus_1(current_time: time, time_schedules: list):
             return t
 
 
+def new_test_ligne_1_online_vers_saint_germain():
+    """
+    This function fetches ligne 10 schedule.
+    Returns:
 
-
-def new_test_online():
+    """
     url = "https://www.transdev-idf.com/horaires-ligne-1/ancienne-mairie-vers-rue-thiers/012-EXPR1-50012166-50012309"
+    # NET REQUEST
     page_data = requests.get(url, "html")
+    print("A NET REQUEST HAPPENED")
+
     soup = BeautifulSoup(page_data.content, "html.parser")
+    print(soup.findAll('div', {"class": "schedule-line"}))
     for item in soup.findAll('div', {"class": "schedule-line"}):
         text_draft = str(item.text)
 
@@ -167,6 +176,70 @@ def new_test_online():
         res = list(map(int, temp))
         print(res)
         # break
+
+
+def new_test_ligne_10_online_vers_saint_germain():
+    """
+    This function fetches ligne 10 schedule.
+    Returns:
+
+    """
+    url = "https://www.transdev-idf.com/horaires-ligne-10/square-de-versailles-vers-rue-thiers/012-ESF-50012500-50012310"
+    # NET REQUEST
+    page_data = requests.get(url, "html")
+    print("A NET REQUEST HAPPENED")
+
+    soup = BeautifulSoup(page_data.content, "html.parser")
+    i = 0
+    for item in soup.findAll("div", {"class": "schedule"}):
+        text_draft = str(item.text)
+        # this is a str with all data # to be processed ex: \n\n06 h\n\n\n     25\n
+        # print(text_draft)
+
+        "If i split this way, every nombre pair is the hours and impair the minutes in the hour."
+        hours_and_minutes_array_data = text_draft.split(sep="\n\n\n")
+        pprint.pprint(hours_and_minutes_array_data)
+        final_res = []
+        for i, elem in enumerate(hours_and_minutes_array_data):
+            print("i = ", i)
+
+            # this filters only numbers
+            temp_data = re.findall(r'\d+', elem)
+            filtered_numbers = list(map(int, temp_data))
+
+            if i % 2 == 0:
+                final_res.append(list(filtered_numbers))
+            else:
+                for numb in filtered_numbers:
+                    final_res[-1].append(numb)
+
+        # ADD THIS LEVEL WE HAVE OUR STRUCTURE
+        """
+        [[6, 25, 51],
+         [7, 10, 20, 30, 38, 48, 55],
+         [8, 7, 16, 23, 33, 39, 48, 59],
+         [9, 6, 16, 26, 36, 51],
+         [10, 0, 23, 49]
+        ]
+        """
+        pprint.pprint(final_res)
+
+
+
+        # print(final_res)
+        # here
+        # temp = re.findall(r'\d+', text_draft)
+        # print("temps =", temp)
+        # res = list(map(int, temp))
+        # print(res)
+
+        extract_clean_schedule_from_text_weird_pattern(text_draft)
+
+
+def extract_clean_schedule_from_text_weird_pattern(arg_text: str):
+    wanted_res = None
+    for line in arg_text.split():
+        pass
 
 
 def format_results(result: dict):
@@ -191,3 +264,19 @@ def url_buses_destinations(bus_number: int):
 
 def url_bus_horaire():
     return "https://api-ratp.pierre-grimaud.fr/v4/schedules/buses/259/jaures/A"
+
+
+def save_fo_file(page_content):
+    """
+    The techniq i used to parse transdev files were with requests.get(), it gets you a page. Then print in console
+    page.content, and put it in a file
+    Returns:
+
+    """
+    pass
+    # file_path = Path
+    # file = open(file)
+
+
+
+
