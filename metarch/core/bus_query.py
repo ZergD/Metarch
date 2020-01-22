@@ -54,10 +54,13 @@ class BusQuery:
         #
         # print(format_results(res))
 
+        # current_time = time(17, 35, 5)
+        current_time = time(9, 40, 0)
+
         # find_bus_1_next_schedule()
-        # new_test_local()
+        new_test_local(current_time)
         # new_test_ligne_1_online_vers_saint_germain()
-        new_test_ligne_10_online_vers_saint_germain()
+        new_test_ligne_10_online_vers_saint_germain(current_time)
 
         # for todo_item in page.json():
         #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
@@ -98,7 +101,7 @@ def find_bus_1_next_schedule():
     # pprint.pprint(res)
 
 
-def new_test_local():
+def new_test_local(current_time):
     local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
     with open(str(local_path), "r") as f:
         content = f.read()
@@ -139,7 +142,7 @@ def new_test_local():
 
         # test if for example, current_time = 8h30, what is the next bus
         # current_time = time(8, 30, 0)
-        current_time = time(9, 30, 0)
+        # current_time = time(17, 30, 0)
         # current_time = time(12, 28, 0)
         # current_time = time(0, 2, 0)
 
@@ -151,7 +154,17 @@ def find_next_bus_1(current_time: time, time_schedules: list):
         # the first iteration when the time schedule is > ie incoming, return that time
         if t > current_time:
             delta_minutes = t.minute - current_time.minute
-            print(f"current time being: {current_time}, the next bus is : {t}, in {delta_minutes} mins")
+            print(f"current time being: {current_time}, the next bus L1 is : {t}, in {delta_minutes} mins")
+            return t
+
+
+def find_next_bus_10(current_time: time, time_schedules: list):
+    print("we got here")
+    for t in time_schedules:
+        # the first iteration when the time schedule is > ie incoming, return that time
+        if t > current_time:
+            delta_minutes = t.minute - current_time.minute
+            print(f"current time being: {current_time}, the next bus L10 is : {t}, in {delta_minutes} mins")
             return t
 
 
@@ -167,7 +180,7 @@ def new_test_ligne_1_online_vers_saint_germain():
     print("A NET REQUEST HAPPENED")
 
     soup = BeautifulSoup(page_data.content, "html.parser")
-    print(soup.findAll('div', {"class": "schedule-line"}))
+    # print(soup.findAll('div', {"class": "schedule-line"}))
     for item in soup.findAll('div', {"class": "schedule-line"}):
         text_draft = str(item.text)
 
@@ -178,7 +191,7 @@ def new_test_ligne_1_online_vers_saint_germain():
         # break
 
 
-def new_test_ligne_10_online_vers_saint_germain():
+def new_test_ligne_10_online_vers_saint_germain(current_time):
     """
     This function fetches ligne 10 schedule.
     Returns:
@@ -190,7 +203,7 @@ def new_test_ligne_10_online_vers_saint_germain():
     print("A NET REQUEST HAPPENED")
 
     soup = BeautifulSoup(page_data.content, "html.parser")
-    i = 0
+    time_schedules = []
     for item in soup.findAll("div", {"class": "schedule"}):
         text_draft = str(item.text)
         # this is a str with all data # to be processed ex: \n\n06 h\n\n\n     25\n
@@ -198,11 +211,9 @@ def new_test_ligne_10_online_vers_saint_germain():
 
         "If i split this way, every nombre pair is the hours and impair the minutes in the hour."
         hours_and_minutes_array_data = text_draft.split(sep="\n\n\n")
-        pprint.pprint(hours_and_minutes_array_data)
+        # pprint.pprint(hours_and_minutes_array_data)
         final_res = []
         for i, elem in enumerate(hours_and_minutes_array_data):
-            print("i = ", i)
-
             # this filters only numbers
             temp_data = re.findall(r'\d+', elem)
             filtered_numbers = list(map(int, temp_data))
@@ -222,10 +233,18 @@ def new_test_ligne_10_online_vers_saint_germain():
          [10, 0, 23, 49]
         ]
         """
+        # TODO  THAT STRUCTURE HAS ITS LAST ELEMEN AN EMPTY ARRAY TO REMOVE SOMEHOW AUTOMATICLY LATER
+        final_res.pop()
         pprint.pprint(final_res)
 
+        res = final_res[0]
+        for hour_schedule in final_res:
+            _hour = hour_schedule[0]
+            for elem in hour_schedule[1:]:
+                t = time(_hour, elem, 0)
+                time_schedules.append(t)
 
-
+    print(time_schedules)
         # print(final_res)
         # here
         # temp = re.findall(r'\d+', text_draft)
@@ -233,7 +252,11 @@ def new_test_ligne_10_online_vers_saint_germain():
         # res = list(map(int, temp))
         # print(res)
 
-        extract_clean_schedule_from_text_weird_pattern(text_draft)
+    # current_time = time(17, 30, 0)
+    # current_time = time(12, 28, 0)
+    # current_time = time(0, 2, 0)
+
+    next_bus_schedule = find_next_bus_10(current_time, time_schedules)
 
 
 def extract_clean_schedule_from_text_weird_pattern(arg_text: str):
@@ -276,7 +299,3 @@ def save_fo_file(page_content):
     pass
     # file_path = Path
     # file = open(file)
-
-
-
-
