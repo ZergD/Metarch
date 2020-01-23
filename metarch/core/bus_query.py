@@ -12,6 +12,7 @@ class BusQuery:
     def __init__(self, debug=False):
         print("BusQuery created...")
         self.name = "Metarch"
+        self.debug = debug
 
     def run_works_manages_to_read_pdf(self):
         """
@@ -59,14 +60,12 @@ class BusQuery:
         print("-------------------------------------------")
         print("|--  current datetime = {} --|".format(dt))
         print("-------------------------------------------")
-        print("hour = ", dt.hour)
-        print("min = ", dt.minute)
         current_time = time(dt.hour, dt.minute, 0)
 
         # find_bus_1_next_schedule()
-        test_ligne_1_vers_saint_germain(current_time)
+        test_ligne_1_vers_saint_germain_local(current_time, self.debug)
         # new_test_ligne_1_online_vers_saint_germain()
-        new_test_ligne_10_online_vers_saint_germain(current_time)
+        new_test_ligne_10_online_vers_saint_germain(current_time, self.debug)
 
         # for todo_item in page.json():
         #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
@@ -107,7 +106,7 @@ def find_bus_1_next_schedule():
     # pprint.pprint(res)
 
 
-def test_ligne_1_vers_saint_germain(current_time):
+def test_ligne_1_vers_saint_germain_local(current_time, debug=False):
     local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
     with open(str(local_path), "r") as f:
         content = f.read()
@@ -125,7 +124,6 @@ def test_ligne_1_vers_saint_germain(current_time):
             temp = re.findall(r'\d+', text_draft)
             res = list(map(int, temp))
             #
-            print(res)
 
             first_time = time(5, 0, 0)
 
@@ -144,7 +142,9 @@ def test_ligne_1_vers_saint_germain(current_time):
             # print(str.split(text_draft))
             # numbers = [int(s) for s in str.split(text_draft) if s.isdigit()]
             # print(numbers)
-            print("#########################################")
+            if debug:
+                print(res)
+                print("#########################################")
 
         # test if for example, current_time = 8h30, what is the next bus
         # current_time = time(8, 30, 0)
@@ -165,7 +165,6 @@ def find_next_bus_1(current_time: time, time_schedules: list):
 
 
 def find_next_bus_10(current_time: time, time_schedules: list):
-    print("we got here")
     for t in time_schedules:
         # the first iteration when the time schedule is > ie incoming, return that time
         if t > current_time:
@@ -197,7 +196,7 @@ def new_test_ligne_1_online_vers_saint_germain():
         # break
 
 
-def new_test_ligne_10_online_vers_saint_germain(current_time):
+def new_test_ligne_10_online_vers_saint_germain(current_time, debug=False):
     """
     This function fetches ligne 10 schedule.
     Returns:
@@ -206,7 +205,8 @@ def new_test_ligne_10_online_vers_saint_germain(current_time):
     url = "https://www.transdev-idf.com/horaires-ligne-10/square-de-versailles-vers-rue-thiers/012-ESF-50012500-50012310"
     # NET REQUEST
     page_data = requests.get(url, "html")
-    print("A NET REQUEST HAPPENED")
+    if debug:
+        print("A NET REQUEST HAPPENED")
 
     soup = BeautifulSoup(page_data.content, "html.parser")
     time_schedules = []
@@ -241,7 +241,8 @@ def new_test_ligne_10_online_vers_saint_germain(current_time):
         """
         # TODO  THAT STRUCTURE HAS ITS LAST ELEMEN AN EMPTY ARRAY TO REMOVE SOMEHOW AUTOMATICLY LATER
         final_res.pop()
-        pprint.pprint(final_res)
+        if debug:
+            pprint.pprint(final_res)
 
         res = final_res[0]
         for hour_schedule in final_res:
@@ -250,7 +251,6 @@ def new_test_ligne_10_online_vers_saint_germain(current_time):
                 t = time(_hour, elem, 0)
                 time_schedules.append(t)
 
-    print(time_schedules)
         # print(final_res)
         # here
         # temp = re.findall(r'\d+', text_draft)
