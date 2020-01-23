@@ -91,7 +91,12 @@ if __name__ == "__main__":
 
     elif "bq" in sys.argv:
         print("Starting Bus Query example...")
-        bus_query = BusQuery()
+        if "-d" in sys.argv:
+            debug_opt = True
+        else:
+            debug_opt = False
+
+        bus_query = BusQuery(debug=debug_opt)
         bus_query.run()
 
 

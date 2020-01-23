@@ -1,5 +1,5 @@
 import re
-from datetime import time, timedelta
+from datetime import time, timedelta, datetime
 from pathlib import Path
 
 import PyPDF2
@@ -9,7 +9,7 @@ import pprint
 
 
 class BusQuery:
-    def __init__(self):
+    def __init__(self, debug=False):
         print("BusQuery created...")
         self.name = "Metarch"
 
@@ -43,7 +43,7 @@ class BusQuery:
         """
         print(f"{self.name} starting run function")
 
-        # # page = url_buses_destinations(259)
+        # page = url_buses_destinations(259)
         # page = url_bus_horaire()
         #
         # print("we are querying this page: ", page)
@@ -51,14 +51,20 @@ class BusQuery:
         # # res is a dict
         # res = response.json()
         # pprint.pprint(res)
-        #
+
         # print(format_results(res))
 
         # current_time = time(17, 35, 5)
-        current_time = time(9, 40, 0)
+        dt = datetime.now()
+        print("-------------------------------------------")
+        print("|--  current datetime = {} --|".format(dt))
+        print("-------------------------------------------")
+        print("hour = ", dt.hour)
+        print("min = ", dt.minute)
+        current_time = time(dt.hour, dt.minute, 0)
 
         # find_bus_1_next_schedule()
-        new_test_local(current_time)
+        test_ligne_1_vers_saint_germain(current_time)
         # new_test_ligne_1_online_vers_saint_germain()
         new_test_ligne_10_online_vers_saint_germain(current_time)
 
@@ -101,7 +107,7 @@ def find_bus_1_next_schedule():
     # pprint.pprint(res)
 
 
-def new_test_local(current_time):
+def test_ligne_1_vers_saint_germain(current_time):
     local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
     with open(str(local_path), "r") as f:
         content = f.read()
@@ -266,6 +272,7 @@ def extract_clean_schedule_from_text_weird_pattern(arg_text: str):
 
 
 def format_results(result: dict):
+    print(dict)
     bus_hours = []
     res = result["result"]["schedules"]
     for bus in res:
@@ -275,7 +282,12 @@ def format_results(result: dict):
     print(res)
 
     first_bus = [int(s) for s in str.split(bus_hours[0]) if s.isdigit()][0]
-    second_bus = [int(s) for s in str.split(bus_hours[1]) if s.isdigit()][0]
+    print("bus_hours[1] = ", bus_hours[1])
+    tmp_array = [int(s) for s in str.split(bus_hours[1]) if s.isdigit()]
+    if tmp_array:
+        second_bus = tmp_array[0]
+    else:
+        second_bus = None
 
     return f"\nLes prochains bus 259 pour Saint Germain en Laye sont dans {first_bus} et {second_bus}\n"
 
