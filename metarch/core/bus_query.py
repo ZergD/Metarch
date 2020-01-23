@@ -64,8 +64,9 @@ class BusQuery:
 
         # find_bus_1_next_schedule()
         test_ligne_1_vers_saint_germain_local(current_time, self.debug)
+        # new_test_ligne_10_vers_saint_germain_online(current_time, self.debug)
+
         # new_test_ligne_1_online_vers_saint_germain()
-        new_test_ligne_10_online_vers_saint_germain(current_time, self.debug)
 
         # for todo_item in page.json():
         #     print('{} {}'.format(todo_item['id'], todo_item['summary']))
@@ -106,7 +107,7 @@ def find_bus_1_next_schedule():
     # pprint.pprint(res)
 
 
-def test_ligne_1_vers_saint_germain_local(current_time, debug=False):
+def test_ligne_1_vers_saint_germain_local(current_time, debug=False, number_of_buses=1):
     local_path = Path.cwd() / "metarch/ressources/ligne_1.html"
     with open(str(local_path), "r") as f:
         content = f.read()
@@ -152,24 +153,24 @@ def test_ligne_1_vers_saint_germain_local(current_time, debug=False):
         # current_time = time(12, 28, 0)
         # current_time = time(0, 2, 0)
 
-        next_bus_schedule = find_next_bus_1(current_time, time_schedules)
+        next_bus_schedule = find_next_bus_1(current_time, time_schedules, 2)
 
 
-def find_next_bus_1(current_time: time, time_schedules: list):
+def find_next_bus_1(current_time: time, time_schedules: list, number_of_buses=1):
     for t in time_schedules:
         # the first iteration when the time schedule is > ie incoming, return that time
         if t > current_time:
             delta_minutes = t.minute - current_time.minute
-            print(f"current time being: {current_time}, the next bus L1 is : {t}, in {delta_minutes} mins")
+            print(f"current time being: {current_time}, the next bus L1  is at: {t}, in {delta_minutes} mins")
             return t
 
 
-def find_next_bus_10(current_time: time, time_schedules: list):
+def find_next_bus_10(current_time: time, time_schedules: list, number_of_buses=1):
     for t in time_schedules:
         # the first iteration when the time schedule is > ie incoming, return that time
         if t > current_time:
             delta_minutes = t.minute - current_time.minute
-            print(f"current time being: {current_time}, the next bus L10 is : {t}, in {delta_minutes} mins")
+            print(f"current time being: {current_time}, the next bus L10 is at: {t}, in {delta_minutes} mins")
             return t
 
 
@@ -196,7 +197,7 @@ def new_test_ligne_1_online_vers_saint_germain():
         # break
 
 
-def new_test_ligne_10_online_vers_saint_germain(current_time, debug=False):
+def new_test_ligne_10_vers_saint_germain_online(current_time, debug=False):
     """
     This function fetches ligne 10 schedule.
     Returns:
