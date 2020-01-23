@@ -8,6 +8,16 @@ from bs4 import BeautifulSoup
 import pprint
 
 
+# class MyTime(time):
+#     def __init__(self, hour=0, minute=0, second=0, microsecond=0):
+#         # super(MyTime, self).__init__(hour=0, minute=0, second=0, microsecond=0)
+#         super(MyTime, self).__init__()
+#         pass
+#
+#     def __repr__(self):
+#         return "I print myself like that"
+
+
 class BusQuery:
     def __init__(self, debug=False):
         print("BusQuery created...")
@@ -130,7 +140,9 @@ def test_ligne_1_vers_saint_germain_local(current_time, debug=False, number_of_b
 
             _hour = res[0]
             for elem in res[1:]:
+                # t = MyTime(_hour, elem, 0)
                 t = time(_hour, elem, 0)
+                print(t)
                 time_schedules.append(t)
                 # print(t)
 
@@ -154,7 +166,7 @@ def test_ligne_1_vers_saint_germain_local(current_time, debug=False, number_of_b
         # current_time = time(12, 28, 0)
         # current_time = time(0, 2, 0)
 
-        next_bus_schedule = find_next_bus_1(current_time, time_schedules, 2)
+        next_bus_schedule = find_next_bus_1(current_time, time_schedules, 4)
 
 
 def find_next_bus_1(current_time: time, time_schedules: list, number_of_buses=1):
@@ -170,8 +182,11 @@ def find_next_bus_1(current_time: time, time_schedules: list, number_of_buses=1)
             results_time.append(t)
             time_seen += 1
             if 1 <= number_of_buses == time_seen:
-                print(f"current time being: {current_time}, the next bus L1  is at: {results_time}, in"
-                      f" {results_minutes} mins")
+                print(f"current time being: {current_time}, the next buses L1 are at:")
+                print("-----------------------------------------------------")
+                for elem, elem_minutes in zip(results_time, results_minutes):
+                    print("|---- {} in {} minutes ---- |".format(elem, elem_minutes))
+                print("-----------------------------------------------------")
                 return t
 
         # return t
