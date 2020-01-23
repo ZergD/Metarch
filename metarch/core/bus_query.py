@@ -145,6 +145,7 @@ def test_ligne_1_vers_saint_germain_local(current_time, debug=False, number_of_b
             # print(numbers)
             if debug:
                 print(res)
+                print(time_schedules)
                 print("#########################################")
 
         # test if for example, current_time = 8h30, what is the next bus
@@ -157,12 +158,23 @@ def test_ligne_1_vers_saint_germain_local(current_time, debug=False, number_of_b
 
 
 def find_next_bus_1(current_time: time, time_schedules: list, number_of_buses=1):
-    for t in time_schedules:
+    results_time = []
+    results_minutes = []
+    time_seen = 0
+    for i, t in enumerate(time_schedules):
+
         # the first iteration when the time schedule is > ie incoming, return that time
         if t > current_time:
-            delta_minutes = t.minute - current_time.minute
-            print(f"current time being: {current_time}, the next bus L1  is at: {t}, in {delta_minutes} mins")
-            return t
+            # delta_minutes = t.minute - current_time.minute
+            results_minutes.append(t.minute - current_time.minute)
+            results_time.append(t)
+            time_seen += 1
+            if 1 <= number_of_buses == time_seen:
+                print(f"current time being: {current_time}, the next bus L1  is at: {results_time}, in"
+                      f" {results_minutes} mins")
+                return t
+
+        # return t
 
 
 def find_next_bus_10(current_time: time, time_schedules: list, number_of_buses=1):
